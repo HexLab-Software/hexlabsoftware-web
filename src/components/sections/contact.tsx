@@ -6,6 +6,7 @@ import {
   useState,
   useTransition,
   type FormEvent,
+  type FocusEvent,
 } from "react";
 import posthog from "posthog-js";
 import { SectionHeading } from "@/components/section-heading";
@@ -14,6 +15,11 @@ import {
   validateContact,
   type ContactPayload,
 } from "@/lib/contact-schema";
+import {
+  executeRecaptcha,
+  primeRecaptcha,
+  RECAPTCHA_ENABLED,
+} from "@/lib/recaptcha-client";
 
 type Status = "idle" | "submitting" | "success" | "error";
 
@@ -49,11 +55,22 @@ export function Contact() {
       return;
     }
 
+    const recaptchaToken = RECAPTCHA_ENABLED
+      ? await executeRecaptcha("contact")
+      : null;
+    if (RECAPTCHA_ENABLED && !recaptchaToken) {
+      setErrors({
+        form: "Impossibile caricare la verifica anti-bot. Disabilita i blocchi script e riprova.",
+      });
+      setStatus("error");
+      return;
+    }
+
     try {
       const res = await fetch("/api/contact", {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify(payload),
+        body: JSON.stringify({ ...payload, recaptchaToken }),
       });
 
       if (!res.ok) {
@@ -137,6 +154,13 @@ export function Contact() {
           <form
             id={formId}
             onSubmit={onSubmit}
+            onFocus={(event: FocusEvent<HTMLFormElement>) => {
+              // Lazy-load reCAPTCHA the first time the user interacts with
+              // the form, instead of on initial page load.
+              if (event.target.tagName === "INPUT" || event.target.tagName === "TEXTAREA") {
+                primeRecaptcha();
+              }
+            }}
             noValidate
             className="relative md:col-span-8"
           >
@@ -205,6 +229,30 @@ export function Contact() {
                     : "Esegui il deployment"}
                 </button>
               </div>
+
+              {RECAPTCHA_ENABLED && (
+                <p className="pt-2 text-[10px] leading-relaxed text-ink-dim">
+                  Questo sito è protetto da reCAPTCHA e si applicano la{" "}
+                  <a
+                    href="https://policies.google.com/privacy"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="underline underline-offset-2 hover:text-ink"
+                  >
+                    Privacy Policy
+                  </a>{" "}
+                  e i{" "}
+                  <a
+                    href="https://policies.google.com/terms"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="underline underline-offset-2 hover:text-ink"
+                  >
+                    Termini di servizio
+                  </a>{" "}
+                  di Google.
+                </p>
+              )}
             </div>
           </form>
         </div>

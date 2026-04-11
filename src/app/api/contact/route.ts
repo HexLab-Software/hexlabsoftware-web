@@ -1,18 +1,25 @@
 import { NextResponse } from "next/server";
 import { validateContact } from "@/lib/contact-schema";
+import { verifyRecaptcha } from "@/lib/recaptcha-server";
 import { SITE } from "@/lib/site";
 
 export const runtime = "nodejs";
 
 /**
- * Brevo transactional email — HTTP API (not SMTP).
- * https://developers.brevo.com/reference/sendtransacemail
+ * Contact form endpoint.
  *
  * Required env vars (set in Vercel project settings):
- *   - BREVO_API_KEY        Brevo SMTP & API → API keys
- *   - BREVO_SENDER_EMAIL   a sender verified in Brevo (e.g. no-reply@hexlabsoftware.it)
- *   - BREVO_SENDER_NAME    display name for the sender
- *   - CONTACT_TO_EMAIL     (optional) override recipient, defaults to site email
+ *   - BREVO_API_KEY             Brevo SMTP & API → API keys
+ *   - BREVO_SENDER_EMAIL        a sender verified in Brevo
+ *   - BREVO_SENDER_NAME         display name for the sender (optional)
+ *   - CONTACT_TO_EMAIL          recipient override (optional)
+ *   - NEXT_PUBLIC_RECAPTCHA_SITE_KEY   reCAPTCHA v3 site key (public)
+ *   - RECAPTCHA_SECRET_KEY            reCAPTCHA v3 secret (server-only)
+ *
+ * If the reCAPTCHA env vars are unset the verification is skipped (useful
+ * for local dev); production deployments MUST set both.
+ *
+ * Brevo transactional HTTP API — https://developers.brevo.com/reference/sendtransacemail
  */
 
 const BREVO_ENDPOINT = "https://api.brevo.com/v3/smtp/email";
@@ -46,7 +53,27 @@ export async function POST(request: Request) {
     return NextResponse.json({ ok: false, error: "invalid-json" }, { status: 400 });
   }
 
-  const result = validateContact((body ?? {}) as Record<string, unknown>);
+  const input = (body ?? {}) as Record<string, unknown>;
+
+  const recaptchaToken =
+    typeof input.recaptchaToken === "string" ? input.recaptchaToken : null;
+  const captcha = await verifyRecaptcha(recaptchaToken, {
+    action: "contact",
+    minScore: 0.5,
+  });
+  if (captcha.status === "failed" || captcha.status === "missing-token") {
+    return NextResponse.json(
+      {
+        ok: false,
+        errors: {
+          form: "Verifica anti-bot non superata. Ricarica la pagina e riprova.",
+        },
+      },
+      { status: 403 },
+    );
+  }
+
+  const result = validateContact(input);
   if (!result.ok) {
     return NextResponse.json({ ok: false, errors: result.errors }, { status: 422 });
   }

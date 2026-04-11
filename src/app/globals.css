@@ -172,6 +172,13 @@ p {
   box-shadow: 0 0 0 1px var(--color-phosphor-fixed), 0 0 24px rgba(0, 255, 65, 0.35);
 }
 
+/* Hide the reCAPTCHA v3 badge — legal text is inlined in the contact form */
+.grecaptcha-badge {
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
 /* Respect reduced motion */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {

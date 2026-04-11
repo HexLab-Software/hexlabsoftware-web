@@ -24,12 +24,14 @@ npm run dev                  # http://localhost:3000
 
 ## Environment variables
 
-| Name                 | Required | Notes                                                  |
-| -------------------- | :------: | ------------------------------------------------------ |
-| `BREVO_API_KEY`      | ✓        | Generated at https://app.brevo.com/settings/keys/api   |
-| `BREVO_SENDER_EMAIL` | ✓        | A sender verified in Brevo                              |
-| `BREVO_SENDER_NAME`  |          | Defaults to `HexLab Software`                          |
-| `CONTACT_TO_EMAIL`   |          | Defaults to `assistenza@hexlabsoftware.it`             |
+| Name                              | Required | Notes                                                         |
+| --------------------------------- | :------: | ------------------------------------------------------------- |
+| `BREVO_API_KEY`                   | ✓        | Generated at https://app.brevo.com/settings/keys/api          |
+| `BREVO_SENDER_EMAIL`              | ✓        | A sender verified in Brevo                                    |
+| `BREVO_SENDER_NAME`               |          | Defaults to `HexLab Software`                                 |
+| `CONTACT_TO_EMAIL`                |          | Defaults to `assistenza@hexlabsoftware.it`                    |
+| `NEXT_PUBLIC_RECAPTCHA_SITE_KEY`  | ✓ (prod) | reCAPTCHA v3 site key — public, exposed to the browser        |
+| `RECAPTCHA_SECRET_KEY`            | ✓ (prod) | reCAPTCHA v3 secret — server-only, never prefix with `NEXT_PUBLIC_` |
 
 These **must be set in the Vercel project settings** before deploy.
 
