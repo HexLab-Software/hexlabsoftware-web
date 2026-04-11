@@ -40,3 +40,6 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# reference assets handed over in chat (not shipped)
+/logo-hexlab.png
