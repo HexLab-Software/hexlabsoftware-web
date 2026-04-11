@@ -44,26 +44,19 @@ export const metadata: Metadata = {
     languages: { "it-IT": "/" },
   },
   openGraph: {
+    // Image metadata is auto-injected by src/app/opengraph-image.tsx
     type: "website",
     locale: SITE.locale,
     url: SITE.url,
     siteName: SITE.name,
     title: `${SITE.legalName} — ${SITE.role}`,
     description: SITE.description,
-    images: [
-      {
-        url: "/og.png",
-        width: 1200,
-        height: 630,
-        alt: `${SITE.name} — ${SITE.tagline}`,
-      },
-    ],
   },
   twitter: {
+    // Image metadata is auto-injected by src/app/twitter-image.tsx
     card: "summary_large_image",
     title: `${SITE.legalName} — ${SITE.role}`,
     description: SITE.description,
-    images: ["/og.png"],
   },
   robots: {
     index: true,
