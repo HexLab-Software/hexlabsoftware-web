@@ -13,11 +13,12 @@ export const runtime = "nodejs";
  *   - BREVO_SENDER_EMAIL        a sender verified in Brevo
  *   - BREVO_SENDER_NAME         display name for the sender (optional)
  *   - CONTACT_TO_EMAIL          recipient override (optional)
- *   - NEXT_PUBLIC_RECAPTCHA_SITE_KEY   reCAPTCHA v3 site key (public)
- *   - RECAPTCHA_SECRET_KEY            reCAPTCHA v3 secret (server-only)
+ *   - NEXT_PUBLIC_RECAPTCHA_SITE_KEY   reCAPTCHA Enterprise site key (public)
+ *   - RECAPTCHA_PROJECT_ID            GCP project id hosting the key
+ *   - RECAPTCHA_API_KEY               GCP API key with reCAPTCHA Enterprise API
  *
  * If the reCAPTCHA env vars are unset the verification is skipped (useful
- * for local dev); production deployments MUST set both.
+ * for local dev); production deployments MUST set all three.
  *
  * Brevo transactional HTTP API — https://developers.brevo.com/reference/sendtransacemail
  */

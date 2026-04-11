@@ -1,13 +1,23 @@
 /**
- * reCAPTCHA v3 server-side verification.
- * https://developers.google.com/recaptcha/docs/verify
+ * reCAPTCHA Enterprise server-side verification.
+ * https://cloud.google.com/recaptcha/docs/create-assessment-website
+ *
+ * As of 2025 Google no longer issues "classic" v3 secret keys for new sites —
+ * keys live inside a Google Cloud project and verification is done via the
+ * `projects.assessments.create` endpoint of the reCAPTCHA Enterprise API.
+ *
+ * The client SDK (`grecaptcha.execute(...)`) is unchanged: the same site key
+ * and the same token flow still work. Only the server verification path has
+ * moved from `https://www.google.com/recaptcha/api/siteverify` to the
+ * Enterprise endpoint below, which requires:
+ *   - RECAPTCHA_PROJECT_ID   your Google Cloud project id (not number)
+ *   - RECAPTCHA_API_KEY      a GCP API key with "reCAPTCHA Enterprise API" enabled
+ *   - NEXT_PUBLIC_RECAPTCHA_SITE_KEY   echoed back in the request body
  *
  * Returns a discriminated result so the caller can tell the difference
  * between "disabled on purpose" (missing env vars → allowed) and "present
  * but failed verification" (blocked).
  */
-
-const VERIFY_URL = "https://www.google.com/recaptcha/api/siteverify";
 
 export type VerifyResult =
   | { status: "disabled" }
@@ -18,26 +28,55 @@ export type VerifyResult =
 export type RecaptchaConfig = {
   /** Expected action name, must match the client-side action. */
   action: string;
-  /** Minimum score (0..1). v3 default 0.5. Higher = stricter. */
+  /** Minimum risk-analysis score (0..1). Higher = stricter. */
   minScore?: number;
+};
+
+type EnterpriseAssessment = {
+  tokenProperties?: {
+    valid?: boolean;
+    invalidReason?: string;
+    action?: string;
+    hostname?: string;
+    createTime?: string;
+  };
+  riskAnalysis?: {
+    score?: number;
+    reasons?: string[];
+  };
+  name?: string;
 };
 
 export async function verifyRecaptcha(
   token: string | undefined | null,
   config: RecaptchaConfig,
 ): Promise<VerifyResult> {
-  const secret = process.env.RECAPTCHA_SECRET_KEY;
-  if (!secret) return { status: "disabled" };
+  const projectId = process.env.RECAPTCHA_PROJECT_ID;
+  const apiKey = process.env.RECAPTCHA_API_KEY;
+  const siteKey = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY;
+
+  // No GCP credentials configured → silently skip (useful for local dev).
+  if (!projectId || !apiKey || !siteKey) return { status: "disabled" };
   if (!token) return { status: "missing-token" };
 
   const minScore = config.minScore ?? 0.5;
 
+  const endpoint =
+    `https://recaptchaenterprise.googleapis.com/v1/projects/${encodeURIComponent(projectId)}/assessments` +
+    `?key=${encodeURIComponent(apiKey)}`;
+
   let response: Response;
   try {
-    response = await fetch(VERIFY_URL, {
+    response = await fetch(endpoint, {
       method: "POST",
-      headers: { "content-type": "application/x-www-form-urlencoded" },
-      body: new URLSearchParams({ secret, response: token }),
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({
+        event: {
+          token,
+          expectedAction: config.action,
+          siteKey,
+        },
+      }),
       signal: AbortSignal.timeout(5_000),
     });
   } catch {
@@ -48,26 +87,29 @@ export async function verifyRecaptcha(
     return { status: "failed", reason: `http-${response.status}` };
   }
 
-  const data = (await response.json().catch(() => null)) as {
-    success?: boolean;
-    score?: number;
-    action?: string;
-    hostname?: string;
-    "error-codes"?: string[];
-  } | null;
+  const data = (await response
+    .json()
+    .catch(() => null)) as EnterpriseAssessment | null;
 
-  if (!data || !data.success) {
-    const err = data?.["error-codes"]?.join(",") ?? "unknown";
-    return { status: "failed", reason: err };
+  if (!data?.tokenProperties?.valid) {
+    return {
+      status: "failed",
+      reason: data?.tokenProperties?.invalidReason ?? "invalid-token",
+    };
   }
 
-  if (typeof data.score === "number" && data.score < minScore) {
-    return { status: "failed", reason: "low-score", score: data.score };
+  if (data.tokenProperties.action && data.tokenProperties.action !== config.action) {
+    return {
+      status: "failed",
+      reason: "action-mismatch",
+      score: data.riskAnalysis?.score,
+    };
   }
 
-  if (data.action && data.action !== config.action) {
-    return { status: "failed", reason: "action-mismatch", score: data.score };
+  const score = data.riskAnalysis?.score ?? 0;
+  if (score < minScore) {
+    return { status: "failed", reason: "low-score", score };
   }
 
-  return { status: "passed", score: data.score ?? 1 };
+  return { status: "passed", score };
 }

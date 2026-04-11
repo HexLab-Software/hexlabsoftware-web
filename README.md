@@ -30,8 +30,9 @@ npm run dev                  # http://localhost:3000
 | `BREVO_SENDER_EMAIL`              | ✓        | A sender verified in Brevo                                    |
 | `BREVO_SENDER_NAME`               |          | Defaults to `HexLab Software`                                 |
 | `CONTACT_TO_EMAIL`                |          | Defaults to `assistenza@hexlabsoftware.it`                    |
-| `NEXT_PUBLIC_RECAPTCHA_SITE_KEY`  | ✓ (prod) | reCAPTCHA v3 site key — public, exposed to the browser        |
-| `RECAPTCHA_SECRET_KEY`            | ✓ (prod) | reCAPTCHA v3 secret — server-only, never prefix with `NEXT_PUBLIC_` |
+| `NEXT_PUBLIC_RECAPTCHA_SITE_KEY`  | ✓ (prod) | reCAPTCHA Enterprise site key — public, exposed to the browser |
+| `RECAPTCHA_PROJECT_ID`            | ✓ (prod) | GCP project id that owns the reCAPTCHA key                     |
+| `RECAPTCHA_API_KEY`               | ✓ (prod) | GCP API key with the reCAPTCHA Enterprise API enabled          |
 
 These **must be set in the Vercel project settings** before deploy.
 
