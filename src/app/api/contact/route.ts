@@ -63,9 +63,17 @@ export async function POST(request: Request) {
     minScore: 0.5,
   });
   if (captcha.status === "failed" || captcha.status === "missing-token") {
+    const reason =
+      captcha.status === "missing-token"
+        ? "missing-token"
+        : captcha.reason;
+    const score = captcha.status === "failed" ? captcha.score : undefined;
+    console.error("[contact] recaptcha rejected", { reason, score });
     return NextResponse.json(
       {
         ok: false,
+        reason,
+        score,
         errors: {
           form: "Verifica anti-bot non superata. Ricarica la pagina e riprova.",
         },
