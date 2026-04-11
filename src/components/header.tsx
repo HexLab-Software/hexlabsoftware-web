@@ -4,9 +4,9 @@ import { useEffect, useState } from "react";
 import { Logo } from "@/components/logo";
 
 const NAV_ITEMS = [
-  { href: "#stack", label: "Stack" },
-  { href: "#projects", label: "Projects" },
-  { href: "#contact", label: "Contact" },
+  { href: "#stack", label: "Competenze" },
+  { href: "#projects", label: "Progetti" },
+  { href: "#contact", label: "Contatti" },
   { href: "#message-form", label: "Preventivo" },
 ] as const;
 
