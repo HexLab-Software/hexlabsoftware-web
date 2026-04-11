@@ -51,7 +51,7 @@ export const SITE = {
     eventSlug: "hexlab-software",
   },
   posthog: {
-    key: "phc_duH8e86Om4Ao7A7tyMND4KQWJFYe1ZMBo1iDfbfpGwl",
+    key: process.env.NEXT_PUBLIC_POSTHOG_KEY ?? "",
     // Routed through the Next.js reverse proxy (see next.config.ts `rewrites`)
     // so ad/tracker blockers don't kill event delivery.
     host: "/ingest",

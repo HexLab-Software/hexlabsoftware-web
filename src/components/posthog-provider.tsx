@@ -9,6 +9,7 @@ let initialised = false;
 
 function initPostHog() {
   if (initialised || typeof window === "undefined") return;
+  if (!SITE.posthog.key) return;
   posthog.init(SITE.posthog.key, {
     api_host: SITE.posthog.host,
     ui_host: SITE.posthog.uiHost,
