@@ -16,6 +16,7 @@
   --color-surface: #1e2840;
   --color-surface-2: #151f36;
   --color-surface-ghost: rgba(30, 40, 64, 0.4);
+  --color-surface-container-lowest: #0b1426;
 
   /* accents — matching the Stitch Tailwind config */
   --color-primary: #6d7793;
@@ -38,8 +39,8 @@
 
 :root {
   color-scheme: dark;
-  --background: #08132a;
-  --foreground: #fbf8fb;
+  --background: var(--color-bg);
+  --foreground: var(--color-ink);
 }
 
 html, body {

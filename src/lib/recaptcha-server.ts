@@ -25,6 +25,34 @@ export type VerifyResult =
   | { status: "passed"; score: number }
   | { status: "failed"; reason: string; score?: number };
 
+/**
+ * In production, missing GCP credentials would silently let spam through. If
+ * any of the three env vars are set, they must ALL be set — an incomplete
+ * config is treated as a hard verification failure. In dev (NODE_ENV !==
+ * "production"), `disabled` still bypasses verification so local iteration
+ * without GCP keys keeps working.
+ */
+function resolveCredentials():
+  | { projectId: string; apiKey: string; siteKey: string }
+  | { status: "disabled" }
+  | { status: "failed"; reason: string } {
+  const projectId = process.env.RECAPTCHA_PROJECT_ID;
+  const apiKey = process.env.RECAPTCHA_API_KEY;
+  const siteKey = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY;
+
+  const any = Boolean(projectId || apiKey || siteKey);
+  const all = Boolean(projectId && apiKey && siteKey);
+
+  if (!all) {
+    if (process.env.NODE_ENV === "production") {
+      return { status: "failed", reason: any ? "partial-config" : "no-config" };
+    }
+    return { status: "disabled" };
+  }
+
+  return { projectId: projectId!, apiKey: apiKey!, siteKey: siteKey! };
+}
+
 export type RecaptchaConfig = {
   /** Expected action name, must match the client-side action. */
   action: string;
@@ -51,12 +79,9 @@ export async function verifyRecaptcha(
   token: string | undefined | null,
   config: RecaptchaConfig,
 ): Promise<VerifyResult> {
-  const projectId = process.env.RECAPTCHA_PROJECT_ID;
-  const apiKey = process.env.RECAPTCHA_API_KEY;
-  const siteKey = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY;
-
-  // No GCP credentials configured → silently skip (useful for local dev).
-  if (!projectId || !apiKey || !siteKey) return { status: "disabled" };
+  const credentials = resolveCredentials();
+  if ("status" in credentials) return credentials;
+  const { projectId, apiKey, siteKey } = credentials;
   if (!token) return { status: "missing-token" };
 
   const minScore = config.minScore ?? 0.5;

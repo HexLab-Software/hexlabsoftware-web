@@ -2,13 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { Logo } from "@/components/logo";
-
-const NAV_ITEMS = [
-  { href: "#stack", label: "Competenze" },
-  { href: "#projects", label: "Progetti" },
-  { href: "#contact", label: "Contatti" },
-  { href: "#message-form", label: "Preventivo" },
-] as const;
+import { SITE } from "@/lib/site";
 
 export function Header() {
   const [open, setOpen] = useState(false);
@@ -23,18 +17,18 @@ export function Header() {
   }, [open]);
 
   return (
-    <nav className="fixed top-0 z-50 w-full border-b border-slate-700/50 bg-[#1E2840] shadow-lg shadow-black/20">
-      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-6 font-['Inter'] tracking-tight antialiased">
+    <nav className="fixed top-0 z-50 w-full border-b border-slate-700/50 bg-primary-container shadow-lg shadow-black/20">
+      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-6 tracking-tight antialiased">
         <a
           href="#top"
           className="flex items-center gap-2 text-xl font-mono font-bold text-slate-100"
-          aria-label="HexLab Software — home"
+          aria-label={`${SITE.name} — home`}
         >
           <Logo size={36} />
         </a>
 
         <div className="hidden items-center gap-8 md:flex">
-          {NAV_ITEMS.map((item) => (
+          {SITE.nav.map((item) => (
             <a
               key={item.href}
               href={item.href}
@@ -46,17 +40,17 @@ export function Header() {
         </div>
 
         <a
-          href="#contact"
-          className="hidden rounded bg-[#6d7793] px-5 py-2 font-medium text-white transition-all hover:bg-opacity-90 active:scale-95 md:inline-flex"
+          href="#booking"
+          className="hidden rounded bg-primary px-5 py-2 font-medium text-white transition-all hover:bg-opacity-90 active:scale-95 md:inline-flex"
         >
-          Prenota call
+          {SITE.bookingCta}
         </a>
 
         <button
           type="button"
           aria-expanded={open}
           aria-controls="mobile-nav"
-          aria-label="Apri navigazione"
+          aria-label={open ? "Chiudi navigazione" : "Apri navigazione"}
           onClick={() => setOpen((v) => !v)}
           className="flex size-10 items-center justify-center text-slate-100 md:hidden"
         >
@@ -74,10 +68,10 @@ export function Header() {
       {open && (
         <div
           id="mobile-nav"
-          className="border-t border-slate-700/50 bg-[#1E2840]/98 backdrop-blur-xl md:hidden"
+          className="border-t border-slate-700/50 bg-primary-container/95 backdrop-blur-xl md:hidden"
         >
           <ul className="flex flex-col gap-1 px-6 py-4">
-            {NAV_ITEMS.map((item) => (
+            {SITE.nav.map((item) => (
               <li key={item.href}>
                 <a
                   href={item.href}
@@ -90,11 +84,11 @@ export function Header() {
             ))}
             <li className="pt-3">
               <a
-                href="#contact"
+                href="#booking"
                 onClick={() => setOpen(false)}
-                className="block rounded bg-[#6d7793] px-5 py-3 text-center font-medium text-white"
+                className="block rounded bg-primary px-5 py-3 text-center font-medium text-white"
               >
-                Prenota call
+                {SITE.bookingCta}
               </a>
             </li>
           </ul>

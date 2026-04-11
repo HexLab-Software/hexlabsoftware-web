@@ -8,6 +8,11 @@ import { SITE } from "@/lib/site";
 /**
  * Cal.com inline booking, wrapped in the glass-panel container from the
  * Stitch screen. Uses `@calcom/embed-react` (free tier, no Platform plan).
+ *
+ * Cal's `cssVarsPerTheme` API takes literal hex strings — it reads them
+ * once at init and can't resolve CSS variables from the host document.
+ * We mirror the tokens declared in `globals.css` here; the two copies
+ * must stay in sync.
  */
 export function Booking() {
   useEffect(() => {
@@ -15,8 +20,8 @@ export function Booking() {
       const cal = await getCalApi({ namespace: "hexlab-call" });
       const theme = {
         "cal-bg": "#1e2840",
-        "cal-bg-muted": "#152238",
-        "cal-bg-emphasis": "#243252",
+        "cal-bg-muted": "#0b1426",
+        "cal-bg-emphasis": "#1e2840",
         "cal-brand": "#6d7793",
         "cal-border": "#334155",
         "cal-border-emphasis": "#858fac",
@@ -33,19 +38,13 @@ export function Booking() {
   }, []);
 
   return (
-    <section
-      id="contact"
-      className="mx-auto max-w-4xl px-6 py-24 text-center"
-    >
+    <section id="booking" className="mx-auto max-w-4xl px-6 py-24 text-center">
       <h2 className="mb-4 font-headline text-3xl font-bold text-white">
-        Parliamo del tuo prossimo progetto
+        {SITE.booking.heading}
       </h2>
-      <p className="mb-12 text-slate-400">
-        Seleziona uno slot libero dal mio calendario per una consulenza tecnica o
-        per discutere di opportunità di collaborazione.
-      </p>
+      <p className="mb-12 text-slate-400">{SITE.booking.subtitle}</p>
 
-      <div className="glass-panel flex min-h-[600px] flex-col items-center justify-center overflow-hidden rounded-2xl border border-slate-700/50 bg-surface-container-lowest/5 p-4 md:p-8">
+      <div className="glass-panel flex min-h-[600px] flex-col items-center justify-center overflow-hidden rounded-2xl border border-slate-700/50 p-4 md:p-8">
         <div className="w-full">
           <Cal
             namespace="hexlab-call"
@@ -65,7 +64,7 @@ export function Booking() {
 
         <p className="mt-8 flex items-center gap-2 text-xs text-slate-500">
           <Icon name="lock" size={12} />
-          Powered by Cal.com · Calendario sincronizzato in tempo reale
+          {SITE.booking.footer}
         </p>
       </div>
     </section>

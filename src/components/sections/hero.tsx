@@ -5,6 +5,7 @@ import { SITE } from "@/lib/site";
  * secondary accent, subtitle, and a full-width terminal mockup below.
  */
 export function Hero() {
+  const stackJson = JSON.stringify(SITE.heroStack, null, 2);
   return (
     <section
       id="top"
@@ -15,17 +16,18 @@ export function Hero() {
       <div className="z-10 w-full max-w-4xl space-y-12">
         <div className="space-y-4 text-center">
           <h1 className="font-headline text-5xl font-extrabold tracking-tighter text-white md:text-7xl">
-            Ingegneria Full Stack{" "}
-            <span className="italic text-[#feb069]">ad Alta Precisione.</span>
+            {SITE.heroHeadlineLead}{" "}
+            <span className="italic text-secondary-italic-bright">
+              {SITE.heroHeadlineAccent}
+            </span>
           </h1>
           <p className="mx-auto max-w-2xl text-xl text-slate-400">
-            Progetto sistemi scalabili, infrastrutture resilienti e interfacce
-            utente intuitive per le sfide tecnologiche di domani.
+            {SITE.heroSubtitle}
           </p>
         </div>
 
         {/* Terminal mockup */}
-        <div className="terminal-glow w-full overflow-hidden rounded-xl border border-slate-700/50 bg-[#1e2840]/80 shadow-2xl">
+        <div className="terminal-glow w-full overflow-hidden rounded-xl border border-slate-700/50 bg-primary-container/80 shadow-2xl">
           <div className="flex items-center gap-2 border-b border-slate-700/50 bg-slate-800/50 px-4 py-2">
             <div className="flex gap-1.5">
               <div className="size-3 rounded-full bg-red-500/80" />
@@ -44,7 +46,7 @@ export function Hero() {
               <span className="text-slate-100">whoami</span>
             </div>
             <div className="mb-4 mt-1 text-slate-400">
-              {SITE.legalName} — Full Stack Engineer &amp; Cloud Architect.
+              {SITE.legalName} — {SITE.heroWhoamiRole}.
             </div>
 
             <div className="flex flex-wrap gap-2">
@@ -53,21 +55,9 @@ export function Hero() {
               <span className="text-slate-500">git:(main)</span>
               <span className="text-slate-100">cat stack.json</span>
             </div>
-            <div className="mb-4 mt-1 text-[#858fac]">
-              {"{"}
-              <br />
-              &nbsp;&nbsp;&quot;backend&quot;: [&quot;Laravel&quot;, &quot;Node.js&quot;, &quot;Python&quot;, &quot;PostgreSQL&quot;],
-              <br />
-              &nbsp;&nbsp;&quot;frontend&quot;: [&quot;React&quot;, &quot;Next.js&quot;, &quot;TypeScript&quot;, &quot;Tailwind&quot;],
-              <br />
-              &nbsp;&nbsp;&quot;mobile&quot;: [&quot;iOS&quot;, &quot;Android&quot;, &quot;React Native&quot;],
-              <br />
-              &nbsp;&nbsp;&quot;ai&quot;: [&quot;LLM&quot;, &quot;RAG&quot;, &quot;Agents&quot;, &quot;OpenAI&quot;, &quot;Anthropic&quot;],
-              <br />
-              &nbsp;&nbsp;&quot;devops&quot;: [&quot;AWS&quot;, &quot;Vercel&quot;, &quot;Docker&quot;, &quot;CI/CD&quot;]
-              <br />
-              {"}"}
-            </div>
+            <pre className="mb-4 mt-1 whitespace-pre-wrap text-on-primary-container">
+              {stackJson}
+            </pre>
 
             <div className="flex flex-wrap gap-2">
               <span className="text-emerald-400">➜</span>

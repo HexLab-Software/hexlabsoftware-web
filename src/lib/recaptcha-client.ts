@@ -43,6 +43,14 @@ function loadScript(): Promise<Grecaptcha | null> {
 
     if (existing) {
       existing.addEventListener("load", handleReady, { once: true });
+      existing.addEventListener(
+        "error",
+        () => {
+          loadingPromise = null;
+          resolve(null);
+        },
+        { once: true },
+      );
       return;
     }
 

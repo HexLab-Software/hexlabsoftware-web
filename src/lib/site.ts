@@ -9,6 +9,52 @@ export const SITE = {
   legalName: "Oreste Acacia",
   role: "Full Stack Developer",
   tagline: "Ingegneria Full Stack ad Alta Precisione",
+  heroHeadlineLead: "Ingegneria Full Stack",
+  heroHeadlineAccent: "ad Alta Precisione.",
+  heroSubtitle:
+    "Progetto sistemi scalabili, infrastrutture resilienti e interfacce utente intuitive per le sfide tecnologiche di domani.",
+  heroWhoamiRole: "Full Stack Engineer & Cloud Architect",
+  heroStack: {
+    backend: ["Laravel", "Node.js", "Python", "PostgreSQL"],
+    frontend: ["React", "Next.js", "TypeScript", "Tailwind"],
+    mobile: ["iOS", "Android", "React Native"],
+    ai: ["LLM", "RAG", "Agents", "OpenAI", "Anthropic"],
+    devops: ["AWS", "Vercel", "Docker", "CI/CD"],
+  },
+  nav: [
+    { href: "#stack", label: "Competenze" },
+    { href: "#projects", label: "Progetti" },
+    { href: "#contact", label: "Contatti" },
+  ],
+  bookingCta: "Prenota call",
+  booking: {
+    heading: "Parliamo del tuo prossimo progetto",
+    subtitle:
+      "Seleziona uno slot libero dal mio calendario per una consulenza tecnica o per discutere di opportunità di collaborazione.",
+    footer: "Powered by Cal.com · Calendario sincronizzato in tempo reale",
+  },
+  contact: {
+    heading: "Iniziamo un Progetto",
+    subtitle:
+      "Invia un messaggio diretto per approfondire collaborazioni tecniche o consulenze.",
+    submit: "Invia Messaggio",
+    submitting: "Invio in corso…",
+    success: "➜ Messaggio ricevuto. Ti scrivo a breve, grazie.",
+    fields: {
+      name: { label: "Nome", placeholder: "Inserisci il tuo nome" },
+      email: { label: "Email", placeholder: "latua@email.com" },
+      subject: { label: "Oggetto", placeholder: "Di cosa vogliamo parlare?" },
+      message: {
+        label: "Messaggio",
+        placeholder:
+          "Descrivi brevemente il tuo progetto o la tua richiesta...",
+      },
+    },
+  },
+  projects: {
+    heading: "Open Source Projects",
+    cta: "Vedi tutti su GitHub",
+  },
   description:
     "HexLab Software è lo studio di Oreste Acacia: ingegneria full stack su misura — web, mobile, AI, e-commerce e cloud. Dal 2011 trasformo idee in prodotti software affidabili e scalabili.",
   keywords: [

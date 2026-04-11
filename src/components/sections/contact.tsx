@@ -19,6 +19,7 @@ import {
   primeRecaptcha,
   RECAPTCHA_ENABLED,
 } from "@/lib/recaptcha-client";
+import { SITE } from "@/lib/site";
 
 type Status = "idle" | "submitting" | "success" | "error";
 type FieldErrors = Partial<
@@ -94,20 +95,17 @@ export function Contact() {
   }
 
   return (
-    <section id="message-form" className="mx-auto max-w-4xl px-6 py-24">
+    <section id="contact" className="mx-auto max-w-4xl px-6 py-24">
       <div className="mb-12 text-center">
         <h2 className="flex items-center justify-center gap-3 font-headline text-3xl font-bold text-white">
-          <Icon name="mail" className="text-[#858fac]" />
-          Iniziamo un Progetto
+          <Icon name="mail" className="text-on-primary-container" />
+          {SITE.contact.heading}
         </h2>
-        <div className="mx-auto mt-2 h-1 w-20 rounded-full bg-[#6d7793]" />
-        <p className="mt-4 text-slate-400">
-          Invia un messaggio diretto per approfondire collaborazioni tecniche o
-          consulenze.
-        </p>
+        <div className="mx-auto mt-2 h-1 w-20 rounded-full bg-primary" />
+        <p className="mt-4 text-slate-400">{SITE.contact.subtitle}</p>
       </div>
 
-      <div className="terminal-glow glass-panel w-full overflow-hidden rounded-xl border border-slate-700/50 bg-[#1e2840]/60 p-8 shadow-2xl">
+      <div className="terminal-glow glass-panel w-full overflow-hidden rounded-xl border border-slate-700/50 bg-primary-container/60 p-8 shadow-2xl">
         <form
           className="space-y-6"
           onSubmit={onSubmit}
@@ -132,19 +130,19 @@ export function Contact() {
 
           <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
             <TerminalField
-              label="Nome"
+              label={SITE.contact.fields.name.label}
               name="name"
               type="text"
-              placeholder="Inserisci il tuo nome"
+              placeholder={SITE.contact.fields.name.placeholder}
               autoComplete="name"
               required
               error={errors.name}
             />
             <TerminalField
-              label="Email"
+              label={SITE.contact.fields.email.label}
               name="email"
               type="email"
-              placeholder="latua@email.com"
+              placeholder={SITE.contact.fields.email.placeholder}
               autoComplete="email"
               required
               error={errors.email}
@@ -152,39 +150,43 @@ export function Contact() {
           </div>
 
           <TerminalField
-            label="Oggetto"
+            label={SITE.contact.fields.subject.label}
             name="subject"
             type="text"
-            placeholder="Di cosa vogliamo parlare?"
+            placeholder={SITE.contact.fields.subject.placeholder}
             required
             error={errors.subject}
           />
 
           <TerminalTextarea
-            label="Messaggio"
+            label={SITE.contact.fields.message.label}
             name="message"
-            placeholder="Descrivi brevemente il tuo progetto o la tua richiesta..."
+            placeholder={SITE.contact.fields.message.placeholder}
             rows={6}
             required
             error={errors.message}
           />
 
-          {errors.form && (
-            <p className="font-mono text-xs text-red-400">{errors.form}</p>
-          )}
-          {status === "success" && (
-            <p className="font-mono text-xs text-emerald-400">
-              ➜ Messaggio ricevuto. Ti scrivo a breve, grazie.
-            </p>
-          )}
+          <div role="status" aria-live="polite" className="min-h-[1rem]">
+            {errors.form && (
+              <p className="font-mono text-xs text-red-400">{errors.form}</p>
+            )}
+            {status === "success" && (
+              <p className="font-mono text-xs text-emerald-400">
+                {SITE.contact.success}
+              </p>
+            )}
+          </div>
 
           <div className="pt-4">
             <button
               type="submit"
               disabled={status === "submitting"}
-              className="group flex w-full cursor-pointer items-center justify-center gap-3 rounded bg-[#6d7793] px-8 py-4 font-bold text-white transition-all hover:bg-opacity-90 active:scale-95 disabled:opacity-50 md:w-auto"
+              className="group flex w-full cursor-pointer items-center justify-center gap-3 rounded bg-primary px-8 py-4 font-bold text-white transition-all hover:bg-opacity-90 active:scale-95 disabled:opacity-50 md:w-auto"
             >
-              {status === "submitting" ? "Invio in corso…" : "Invia Messaggio"}
+              {status === "submitting"
+                ? SITE.contact.submitting
+                : SITE.contact.submit}
               <Icon
                 name="send"
                 size={20}
@@ -250,7 +252,7 @@ function TerminalField({
     <div className="space-y-2">
       <label
         htmlFor={id}
-        className="block font-mono text-sm text-[#858fac]"
+        className="block font-mono text-sm text-on-primary-container"
       >
         # {label}
       </label>
@@ -263,7 +265,7 @@ function TerminalField({
         autoComplete={autoComplete}
         aria-invalid={error ? "true" : undefined}
         aria-describedby={error ? `${id}-err` : undefined}
-        className="w-full rounded border border-slate-700 bg-slate-800/50 p-3 font-mono text-sm text-slate-100 outline-none transition-all focus:border-[#858fac] focus:ring-1 focus:ring-[#858fac]"
+        className="w-full rounded border border-slate-700 bg-slate-800/50 p-3 font-mono text-sm text-slate-100 outline-none transition-all focus:border-on-primary-container focus:ring-1 focus:ring-on-primary-container"
       />
       {error && (
         <p id={`${id}-err`} className="font-mono text-xs text-red-400">
@@ -294,7 +296,7 @@ function TerminalTextarea({
     <div className="space-y-2">
       <label
         htmlFor={id}
-        className="block font-mono text-sm text-[#858fac]"
+        className="block font-mono text-sm text-on-primary-container"
       >
         # {label}
       </label>
@@ -306,7 +308,7 @@ function TerminalTextarea({
         required={required}
         aria-invalid={error ? "true" : undefined}
         aria-describedby={error ? `${id}-err` : undefined}
-        className="min-h-[150px] w-full rounded border border-slate-700 bg-slate-800/50 p-3 font-mono text-sm text-slate-100 outline-none transition-all focus:border-[#858fac] focus:ring-1 focus:ring-[#858fac]"
+        className="min-h-[150px] w-full rounded border border-slate-700 bg-slate-800/50 p-3 font-mono text-sm text-slate-100 outline-none transition-all focus:border-on-primary-container focus:ring-1 focus:ring-on-primary-container"
       />
       {error && (
         <p id={`${id}-err`} className="font-mono text-xs text-red-400">

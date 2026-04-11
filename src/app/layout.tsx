@@ -109,7 +109,7 @@ export default function RootLayout({
           href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&display=swap"
         />
       </head>
-      <body className="min-h-screen bg-[color:var(--color-bg)] text-[#fbf8fb] antialiased selection:bg-[#858fac] selection:text-[#08132a]">
+      <body className="min-h-screen bg-bg text-ink antialiased">
         <PostHogProvider>{children}</PostHogProvider>
         <JsonLd />
         <Analytics />

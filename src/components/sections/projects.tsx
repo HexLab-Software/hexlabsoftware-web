@@ -3,12 +3,12 @@ import { PROJECTS, type Project } from "@/lib/projects";
 import { SITE } from "@/lib/site";
 
 const LANGUAGE_DOT: Record<string, string> = {
-  Python: "bg-sky-400",
+  Python: "bg-emerald-400",
   PHP: "bg-indigo-400",
   TypeScript: "bg-sky-400",
   JavaScript: "bg-amber-400",
-  Go: "bg-emerald-400",
-  Rust: "bg-amber-400",
+  Go: "bg-cyan-400",
+  Rust: "bg-orange-400",
 };
 
 /**
@@ -26,7 +26,7 @@ function ProjectVisual({ project }: { project: Project }) {
         background: `
           radial-gradient(ellipse at 20% 10%, hsl(${h1} 65% 35% / 0.55), transparent 55%),
           radial-gradient(ellipse at 85% 85%, hsl(${h2} 60% 30% / 0.45), transparent 60%),
-          linear-gradient(135deg, #1e2840 0%, #0f172a 100%)
+          linear-gradient(135deg, var(--color-primary-container) 0%, #0f172a 100%)
         `,
       }}
       aria-hidden
@@ -35,12 +35,12 @@ function ProjectVisual({ project }: { project: Project }) {
         className="absolute inset-0 opacity-[0.08]"
         style={{
           backgroundImage:
-            "linear-gradient(#858fac 1px, transparent 1px), linear-gradient(90deg, #858fac 1px, transparent 1px)",
+            "linear-gradient(var(--color-on-primary-container) 1px, transparent 1px), linear-gradient(90deg, var(--color-on-primary-container) 1px, transparent 1px)",
           backgroundSize: "24px 24px",
         }}
       />
       <span
-        className="absolute inset-0 flex items-center justify-center font-mono text-8xl leading-none text-[#858fac]/60 transition-transform duration-500 group-hover:scale-105"
+        className="absolute inset-0 flex items-center justify-center font-mono text-8xl leading-none text-on-primary-container/60 transition-transform duration-500 group-hover:scale-105"
         style={{ textShadow: `0 0 48px hsl(${h1} 80% 55% / 0.35)` }}
       >
         {project.glyph}
@@ -56,7 +56,7 @@ function ProjectCard({ project }: { project: Project }) {
       href={project.href}
       target="_blank"
       rel="noopener noreferrer"
-      className="group relative flex flex-col overflow-hidden rounded-xl border border-slate-700/50 bg-[#1e2840] transition-all hover:border-[#6d7793]"
+      className="group relative flex flex-col overflow-hidden rounded-xl border border-slate-700/50 bg-primary-container transition-all hover:border-primary"
     >
       <ProjectVisual project={project} />
       <div className="p-6">
@@ -88,24 +88,24 @@ export function Projects() {
   return (
     <section
       id="projects"
-      className="border-y border-slate-700/50 bg-[#1e2840]/30 py-24"
+      className="border-y border-slate-700/50 bg-primary-container/30 py-24"
     >
       <div className="mx-auto max-w-7xl px-6">
         <div className="mb-16 flex flex-col items-start justify-between gap-6 md:flex-row md:items-end">
           <div>
             <h2 className="flex items-center gap-3 font-headline text-3xl font-bold text-white">
-              <Icon name="code" className="text-[#858fac]" />
-              Open Source Projects
+              <Icon name="code" className="text-on-primary-container" />
+              {SITE.projects.heading}
             </h2>
-            <div className="mt-2 h-1 w-20 rounded-full bg-[#6d7793]" />
+            <div className="mt-2 h-1 w-20 rounded-full bg-primary" />
           </div>
           <a
             href={SITE.social.github}
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center gap-2 font-medium text-[#858fac] hover:underline"
+            className="flex items-center gap-2 font-medium text-on-primary-container hover:underline"
           >
-            Vedi tutti su GitHub <Icon name="open_in_new" size={16} />
+            {SITE.projects.cta} <Icon name="open_in_new" size={16} />
           </a>
         </div>
         <div className="grid grid-cols-1 gap-8 md:grid-cols-3">

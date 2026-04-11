@@ -83,7 +83,14 @@ export async function POST(request: Request) {
     return NextResponse.json({ ok: false, errors: result.errors }, { status: 422 });
   }
 
-  const { name, email, subject, message } = result.data;
+  // Strip control characters from header-bound fields (name / email /
+  // subject) so a payload with embedded \r\n can't smuggle extra headers
+  // through Brevo's JSON API into the outgoing MIME envelope.
+  const stripCtl = (s: string) => s.replace(/[\u0000-\u001f\u007f]/g, " ").trim();
+  const { message } = result.data;
+  const name = stripCtl(result.data.name);
+  const email = stripCtl(result.data.email);
+  const subject = stripCtl(result.data.subject);
   const safe = {
     name: escapeHtml(name),
     email: escapeHtml(email),

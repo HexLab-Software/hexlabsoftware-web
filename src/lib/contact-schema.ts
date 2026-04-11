@@ -36,17 +36,18 @@ export function validateContact(input: Partial<ContactPayload>): ValidationResul
   const message = (input.message ?? "").trim();
 
   if (name.length < 2) errors.name = "Il nome deve avere almeno 2 caratteri.";
-  if (name.length > 120) errors.name = "Il nome è troppo lungo.";
+  else if (name.length > 120) errors.name = "Il nome è troppo lungo.";
 
   if (!EMAIL_RE.test(email)) errors.email = "Inserisci un'email valida.";
-  if (email.length > 200) errors.email = "L'email è troppo lunga.";
+  else if (email.length > 200) errors.email = "L'email è troppo lunga.";
 
   if (subject.length < 3) errors.subject = "L'oggetto deve avere almeno 3 caratteri.";
-  if (subject.length > 200) errors.subject = "L'oggetto è troppo lungo.";
+  else if (subject.length > 200) errors.subject = "L'oggetto è troppo lungo.";
 
   if (message.length < 20)
     errors.message = "Scrivi almeno 20 caratteri per descrivere il progetto.";
-  if (message.length > 4000) errors.message = "Il messaggio supera i 4000 caratteri.";
+  else if (message.length > 4000)
+    errors.message = "Il messaggio supera i 4000 caratteri.";
 
   // Spam heuristics
   if (input.company && input.company.length > 0) {
