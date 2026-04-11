@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Inter, Fira_Code } from "next/font/google";
 import { SITE } from "@/lib/site";
+import { Analytics } from "@vercel/analytics/next";
 import { PostHogProvider } from "@/components/posthog-provider";
 import { JsonLd } from "@/components/json-ld";
 import "./globals.css";
@@ -110,6 +111,7 @@ export default function RootLayout({
       <body className="min-h-screen bg-[color:var(--color-bg)] text-[#fbf8fb] antialiased selection:bg-[#858fac] selection:text-[#08132a]">
         <PostHogProvider>{children}</PostHogProvider>
         <JsonLd />
+        <Analytics />
       </body>
     </html>
   );
