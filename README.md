@@ -1,6 +1,6 @@
 # hexlabsoftware.it
 
-Sito istituzionale di **HexLab Software** — Next.js 16 (App Router) + Tailwind CSS v4 + TypeScript, deployato su Vercel.
+Marketing site for **HexLab Software** — Next.js 16 (App Router) + Tailwind CSS v4 + TypeScript, deployed on Vercel.
 
 ## Stack
 
@@ -23,43 +23,43 @@ npm install
 npm run dev                  # http://localhost:3000
 ```
 
-Senza le env vars il sito gira lo stesso: il form `/api/contact` risponde `server-misconfigured` e la verifica reCAPTCHA viene saltata (comportamento intenzionale per il dev locale).
+Without the env vars the site still runs: `/api/contact` responds with `server-misconfigured` and reCAPTCHA verification is skipped (intentional for local dev, not a bug).
 
 ## Environment variables
 
 | Name                              | Required | Notes                                                         |
 | --------------------------------- | :------: | ------------------------------------------------------------- |
-| `BREVO_API_KEY`                   | ✓        | Generata in https://app.brevo.com/settings/keys/api           |
-| `BREVO_SENDER_EMAIL`              | ✓        | Un sender verificato in Brevo                                 |
-| `BREVO_SENDER_NAME`               |          | Default: `HexLab Software`                                    |
-| `CONTACT_TO_EMAIL`                |          | Default: `assistenza@hexlabsoftware.it`                       |
-| `NEXT_PUBLIC_RECAPTCHA_SITE_KEY`  | ✓ (prod) | reCAPTCHA Enterprise site key — pubblica, esposta al browser  |
-| `RECAPTCHA_PROJECT_ID`            | ✓ (prod) | GCP project id che possiede la key reCAPTCHA                  |
-| `RECAPTCHA_API_KEY`               | ✓ (prod) | GCP API key ristretta alla reCAPTCHA Enterprise API           |
-| `NEXT_PUBLIC_POSTHOG_KEY`         |          | PostHog project key (`phc_…`) — unset per disabilitare        |
+| `BREVO_API_KEY`                   | ✓        | Generated at https://app.brevo.com/settings/keys/api          |
+| `BREVO_SENDER_EMAIL`              | ✓        | A sender verified in Brevo                                    |
+| `BREVO_SENDER_NAME`               |          | Defaults to `HexLab Software`                                 |
+| `CONTACT_TO_EMAIL`                |          | Defaults to `assistenza@hexlabsoftware.it`                    |
+| `NEXT_PUBLIC_RECAPTCHA_SITE_KEY`  | ✓ (prod) | reCAPTCHA Enterprise site key — public, shipped to the browser |
+| `RECAPTCHA_PROJECT_ID`            | ✓ (prod) | GCP project id that owns the reCAPTCHA key                     |
+| `RECAPTCHA_API_KEY`               | ✓ (prod) | GCP API key restricted to the reCAPTCHA Enterprise API         |
+| `NEXT_PUBLIC_POSTHOG_KEY`         |          | PostHog project key (`phc_…`) — unset to disable analytics     |
 
-Le variabili devono essere settate nel progetto Vercel prima del deploy. Le `NEXT_PUBLIC_*` sono inline a build time, quindi un cambio richiede un redeploy.
+These must be set in the Vercel project settings before deploy. `NEXT_PUBLIC_*` vars are inlined at build time, so changing them requires a redeploy.
 
 ## Architecture notes
 
-- **One-page site**. Tutte le sezioni vivono in `src/components/sections/*`, composte in `src/app/page.tsx`. Nessuna route dinamica oltre a `/api/contact`.
-- **Design tokens** (colori, font, spacing) in `@theme inline {…}` dentro `src/app/globals.css`. In Tailwind v4 non esiste `tailwind.config.*`.
-- **Site constants** (contatti, social, keywords, Cal username) centralizzate in `src/lib/site.ts` — single-file edit per rebrand / cambio P.IVA.
-- **Contact form**: schema di validazione condiviso in `src/lib/contact-schema.ts`, eseguito sia sul client che nell'API route. Brevo viene chiamato solo server-side.
-- **reCAPTCHA Enterprise**: l'endpoint `recaptchaenterprise.googleapis.com/v1/projects/{id}/assessments` richiede che la GCP API key non abbia restrizioni HTTP referrer (le call sono server-to-server dalla serverless function).
-- **PostHog reverse proxy**: `next.config.ts` riscrive `/ingest/*` verso `us.i.posthog.com` per bypassare gli ad blocker che altrimenti fanno perdere eventi.
-- **SEO**: OG image e Twitter image generate dinamicamente in `src/app/opengraph-image.tsx` / `twitter-image.tsx`. JSON-LD (Person + Organization + WebSite) in `src/components/json-ld.tsx`. 308 redirect dalle vecchie URL PHP sono in `next.config.ts`.
+- **One-page site**. All sections live in `src/components/sections/*`, composed from `src/app/page.tsx`. No dynamic routes other than `/api/contact`.
+- **Design tokens** (colours, fonts, spacing) live in `@theme inline {…}` inside `src/app/globals.css`. Tailwind v4 has no `tailwind.config.*` file.
+- **Site constants** (contact, social, keywords, Cal username) are centralised in `src/lib/site.ts` — single-file edit for rebrands or VAT number changes.
+- **Contact form**: shared validation schema in `src/lib/contact-schema.ts` runs on both the client and the `/api/contact` route handler. Brevo is called server-side only.
+- **reCAPTCHA Enterprise**: the `recaptchaenterprise.googleapis.com/v1/projects/{id}/assessments` endpoint requires that the GCP API key has no HTTP referrer restrictions — calls are server-to-server from the serverless function and carry no `Referer` header.
+- **PostHog reverse proxy**: `next.config.ts` rewrites `/ingest/*` to `us.i.posthog.com` to bypass ad/tracker blockers that otherwise drop events for a meaningful share of visitors.
+- **SEO**: OG image and Twitter image are generated dynamically in `src/app/opengraph-image.tsx` / `twitter-image.tsx`. JSON-LD (Person + Organization + WebSite) in `src/components/json-ld.tsx`. Legacy PHP URLs are 308-redirected in `next.config.ts`.
 
 ## Scripts
 
 ```bash
-npm run dev     # dev locale con Turbopack
-npm run build   # build prod + TS type-check + static generation
-npm run start   # serve della build di produzione
-npm run lint    # ESLint (next lint è stato rimosso in Next 16)
+npm run dev     # local dev with Turbopack
+npm run build   # prod build + TS type-check + static generation
+npm run start   # serve the production build locally
+npm run lint    # ESLint (next lint is removed in Next 16)
 ```
 
-`npm run build` è il gate canonico pre-commit: fa girare TypeScript su tutto il tree e fallisce su qualunque errore di tipo.
+`npm run build` is the canonical pre-commit gate: it runs TypeScript over the whole tree and fails on any type error.
 
 ## License
 
