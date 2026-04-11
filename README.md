@@ -1,36 +1,64 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# hexlabsoftware.it
 
-## Getting Started
+Sito istituzionale di **HexLab Software** — Next.js 16 (App Router) + Tailwind CSS v4 + TypeScript.
 
-First, run the development server:
+## Stack
+
+| Layer        | Tech                                                       |
+| ------------ | ---------------------------------------------------------- |
+| Framework    | Next.js 16.2 (App Router, Turbopack)                       |
+| Language     | TypeScript 5 (strict)                                      |
+| Styling      | Tailwind CSS v4 (theme in `src/app/globals.css`)           |
+| Booking      | [`@calcom/embed-react`](https://cal.com/docs/embed/install) (free tier) |
+| Mail         | [Brevo transactional HTTP API](https://developers.brevo.com/reference/sendtransacemail) |
+| Analytics    | PostHog (EU cloud)                                         |
+| Deployment   | Vercel                                                     |
+
+## Local development
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+cp .env.example .env.local   # fill in Brevo credentials
+npm install
+npm run dev                  # http://localhost:3000
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Environment variables
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+| Name                 | Required | Notes                                                  |
+| -------------------- | :------: | ------------------------------------------------------ |
+| `BREVO_API_KEY`      | ✓        | Generated at https://app.brevo.com/settings/keys/api   |
+| `BREVO_SENDER_EMAIL` | ✓        | A sender verified in Brevo                              |
+| `BREVO_SENDER_NAME`  |          | Defaults to `HexLab Software`                          |
+| `CONTACT_TO_EMAIL`   |          | Defaults to `assistenza@hexlabsoftware.it`             |
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+These **must be set in the Vercel project settings** before deploy.
 
-## Learn More
+## SEO checklist
 
-To learn more about Next.js, take a look at the following resources:
+- [x] `metadata` API with OG + Twitter cards
+- [x] JSON-LD (Person + Organization + WebSite) in `src/components/json-ld.tsx`
+- [x] `sitemap.xml` and `robots.txt` generated dynamically
+- [x] `hreflang="it-IT"` + canonical on every page
+- [x] Google Search Console verification meta tag preserved from legacy site
+- [ ] `og.png` (1200×630) — **TODO: add a rendered OG image to `/public/og.png`**
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Architecture notes
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- **One-page site**. All sections live in `src/components/sections/*`, composed from `src/app/page.tsx`.
+- **Design tokens** (colours, fonts, spacing) live in `@theme inline {…}` inside `src/app/globals.css`. No tailwind.config.* file in Tailwind v4.
+- **Site constants** (contact, social, keywords, Cal username) centralised in `src/lib/site.ts` — single-file edit for rebrands.
+- **Contact form**: shared validation schema in `src/lib/contact-schema.ts` runs on both client and `/api/contact` route handler. Brevo is called server-side only.
+- **Spam defence**: honeypot input + minimum fill time heuristic — no captcha.
 
-## Deploy on Vercel
+## Scripts
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```bash
+npm run dev     # local dev with Turbopack
+npm run build   # prod build + TS type-check + static generation
+npm run start   # serve the production build locally
+npm run lint    # ESLint (next lint is removed in Next 16)
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## License
+
+All rights reserved © Oreste Acacia — HexLab Software.
