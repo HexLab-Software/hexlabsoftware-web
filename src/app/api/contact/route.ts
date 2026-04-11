@@ -79,19 +79,21 @@ export async function POST(request: Request) {
     return NextResponse.json({ ok: false, errors: result.errors }, { status: 422 });
   }
 
-  const { name, email, message } = result.data;
+  const { name, email, subject, message } = result.data;
   const safe = {
     name: escapeHtml(name),
     email: escapeHtml(email),
+    subject: escapeHtml(subject),
     message: escapeHtml(message).replace(/\n/g, "<br>"),
   };
 
   const html = `
     <div style="font-family:Inter,Helvetica,Arial,sans-serif;line-height:1.6;color:#131313;">
-      <h2 style="margin:0 0 16px;font-family:'Space Grotesk',Inter,sans-serif;">Nuova richiesta di preventivo</h2>
+      <h2 style="margin:0 0 16px;">Nuova richiesta dal sito</h2>
       <table style="width:100%;border-collapse:collapse;">
         <tr><td style="padding:6px 0;width:120px;color:#666;">Nome</td><td style="padding:6px 0;"><strong>${safe.name}</strong></td></tr>
         <tr><td style="padding:6px 0;color:#666;">Email</td><td style="padding:6px 0;"><a href="mailto:${safe.email}">${safe.email}</a></td></tr>
+        <tr><td style="padding:6px 0;color:#666;">Oggetto</td><td style="padding:6px 0;">${safe.subject}</td></tr>
       </table>
       <hr style="border:none;border-top:1px solid #eee;margin:20px 0;">
       <p style="margin:0;"><strong>Messaggio</strong></p>
@@ -101,10 +103,11 @@ export async function POST(request: Request) {
     </div>
   `.trim();
 
-  const text = `Nuova richiesta di preventivo
+  const text = `Nuova richiesta dal sito
 
 Nome: ${name}
 Email: ${email}
+Oggetto: ${subject}
 
 ${message}
 
@@ -115,7 +118,7 @@ Inviato da ${SITE.url}`;
     sender: { email: senderEmail, name: senderName },
     to: [{ email: toEmail, name: SITE.name }],
     replyTo: { email, name },
-    subject: `[HexLab] Richiesta di preventivo — ${name}`,
+    subject: `[HexLab] ${subject} — ${name}`,
     htmlContent: html,
     textContent: text,
     tags: ["contact-form", "hexlabsoftware.it"],

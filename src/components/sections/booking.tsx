@@ -2,48 +2,30 @@
 
 import { useEffect } from "react";
 import Cal, { getCalApi } from "@calcom/embed-react";
-import { SectionHeading } from "@/components/section-heading";
+import { Icon } from "@/components/icon";
 import { SITE } from "@/lib/site";
 
 /**
- * Cal.com inline booking.
- *
- * Uses `@calcom/embed-react` (the free embed SDK, no Platform plan required).
- * Oreste had initially referenced `@calcom/atoms` `BookerEmbed`, but that
- * requires the paid Cal.com Platform plan + OAuth CalProvider setup — not
- * worth it for a single marketing site. If we ever migrate to atoms we only
- * need to swap this component.
+ * Cal.com inline booking, wrapped in the glass-panel container from the
+ * Stitch screen. Uses `@calcom/embed-react` (free tier, no Platform plan).
  */
 export function Booking() {
   useEffect(() => {
     (async () => {
       const cal = await getCalApi({ namespace: "hexlab-call" });
+      const theme = {
+        "cal-bg": "#1e2840",
+        "cal-bg-muted": "#152238",
+        "cal-bg-emphasis": "#243252",
+        "cal-brand": "#6d7793",
+        "cal-border": "#334155",
+        "cal-border-emphasis": "#858fac",
+        "cal-text": "#e2e8f0",
+        "cal-text-muted": "#94a3b8",
+        "cal-text-emphasis": "#ffffff",
+      };
       cal("ui", {
-        theme: "dark",
-        cssVarsPerTheme: {
-          light: {
-            "cal-bg": "#131313",
-            "cal-bg-muted": "#1c1b1b",
-            "cal-bg-emphasis": "#2a2a2a",
-            "cal-brand": "#00ff41",
-            "cal-border": "#3b4b37",
-            "cal-border-emphasis": "#84967e",
-            "cal-text": "#e5e2e1",
-            "cal-text-muted": "#b9ccb2",
-            "cal-text-emphasis": "#ffffff",
-          },
-          dark: {
-            "cal-bg": "#131313",
-            "cal-bg-muted": "#1c1b1b",
-            "cal-bg-emphasis": "#2a2a2a",
-            "cal-brand": "#00ff41",
-            "cal-border": "#3b4b37",
-            "cal-border-emphasis": "#84967e",
-            "cal-text": "#e5e2e1",
-            "cal-text-muted": "#b9ccb2",
-            "cal-text-emphasis": "#ffffff",
-          },
-        },
+        cssVarsPerTheme: { light: theme, dark: theme },
         hideEventTypeDetails: false,
         layout: "month_view",
       });
@@ -52,40 +34,39 @@ export function Booking() {
 
   return (
     <section
-      id="prenota"
-      className="relative bg-[color:var(--color-surface-2)] py-28 md:py-40"
+      id="contact"
+      className="mx-auto max-w-4xl px-6 py-24 text-center"
     >
-      <div className="mx-auto max-w-[1440px] px-6 md:px-10">
-        <SectionHeading
-          index="03"
-          eyebrow="Parliamo"
-          title={
-            <>
-              Prenota una call di{" "}
-              <span className="text-[color:var(--color-phosphor)]">30 minuti</span>.
-            </>
-          }
-          lede="Gratuita, senza impegno. Mi racconti il progetto, ti rispondo con una prima stima di fattibilità, tempistiche e budget."
-        />
+      <h2 className="mb-4 font-headline text-3xl font-bold text-white">
+        Parliamo del tuo prossimo progetto
+      </h2>
+      <p className="mb-12 text-slate-400">
+        Seleziona uno slot libero dal mio calendario per una consulenza tecnica o
+        per discutere di opportunità di collaborazione.
+      </p>
 
-        <div className="mt-16 bg-[color:var(--color-surface-1)] p-2 md:p-4">
-          <div className="relative min-h-[720px]">
-            <Cal
-              namespace="hexlab-call"
-              calLink={`${SITE.cal.username}/${SITE.cal.eventSlug}`}
-              style={{
-                width: "100%",
-                height: "100%",
-                minHeight: 720,
-                overflow: "scroll",
-              }}
-              config={{
-                layout: "month_view",
-                theme: "dark",
-              }}
-            />
-          </div>
+      <div className="glass-panel flex min-h-[600px] flex-col items-center justify-center overflow-hidden rounded-2xl border border-slate-700/50 bg-surface-container-lowest/5 p-4 md:p-8">
+        <div className="w-full">
+          <Cal
+            namespace="hexlab-call"
+            calLink={`${SITE.cal.username}/${SITE.cal.eventSlug}`}
+            style={{
+              width: "100%",
+              height: "100%",
+              minHeight: 600,
+              overflow: "scroll",
+            }}
+            config={{
+              layout: "month_view",
+              theme: "dark",
+            }}
+          />
         </div>
+
+        <p className="mt-8 flex items-center gap-2 text-xs text-slate-500">
+          <Icon name="lock" size={12} />
+          Powered by Cal.com · Calendario sincronizzato in tempo reale
+        </p>
       </div>
     </section>
   );

@@ -1,17 +1,15 @@
 import { SITE } from "@/lib/site";
 
 /**
- * HexLab custom logo — a hexagon with an inscribed "HX" monogram built from
- * terminal-bracket strokes. Single inline SVG so it ships zero requests and
- * scales crisply. Uses currentColor so it inherits the surrounding text color.
+ * HexLab custom logo — hexagon with inscribed "HX" glyph.
+ * Restyled to match the Stitch screen palette: slate strokes on the
+ * navy nav bar, no phosphor accents.
  */
 export function Logo({
   className = "",
-  withWordmark = true,
-  size = 36,
+  size = 40,
 }: {
   className?: string;
-  withWordmark?: boolean;
   size?: number;
 }) {
   return (
@@ -30,43 +28,40 @@ export function Logo({
       >
         <path
           d="M24 2 L42 13 L42 35 L24 46 L6 35 L6 13 Z"
-          stroke="currentColor"
+          stroke="#858fac"
           strokeWidth="1.5"
           strokeLinejoin="miter"
+          fill="#1e2840"
         />
         <path
-          d="M24 6 L38.5 14.5 L38.5 33.5 L24 42 L9.5 33.5 L9.5 14.5 Z"
-          stroke="currentColor"
+          d="M24 7 L37.5 15 L37.5 33 L24 41 L10.5 33 L10.5 15 Z"
+          stroke="#858fac"
           strokeOpacity="0.25"
           strokeWidth="1"
         />
-        {/* H stroke */}
         <path
           d="M16 17 L16 31 M16 24 L26 24 M26 17 L26 31"
-          stroke="var(--color-phosphor)"
+          stroke="#e2e8f0"
           strokeWidth="2"
           strokeLinecap="square"
         />
-        {/* X / bracket accent */}
         <path
           d="M30 17 L34 24 L30 31"
-          stroke="var(--color-phosphor)"
+          stroke="#858fac"
           strokeWidth="2"
           strokeLinecap="square"
           strokeLinejoin="miter"
           fill="none"
         />
       </svg>
-      {withWordmark && (
-        <span className="flex flex-col leading-none">
-          <span className="font-display text-[15px] font-medium tracking-tight text-ink">
-            HexLab
-          </span>
-          <span className="font-mono text-[10px] uppercase tracking-[0.22em] text-ink-dim">
-            software
-          </span>
+      <span className="flex flex-col leading-none">
+        <span className="font-mono text-[15px] font-bold tracking-tight text-slate-100">
+          HexLab
         </span>
-      )}
+        <span className="font-mono text-[10px] uppercase tracking-[0.22em] text-slate-500">
+          software
+        </span>
+      </span>
     </span>
   );
 }

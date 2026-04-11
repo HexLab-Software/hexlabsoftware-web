@@ -10,7 +10,7 @@ export default function HomePage() {
   return (
     <>
       <Header />
-      <main>
+      <main className="pt-16">
         <Hero />
         <Skills />
         <Projects />

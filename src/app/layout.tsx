@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Inter, Space_Grotesk, JetBrains_Mono } from "next/font/google";
+import { Inter, Fira_Code } from "next/font/google";
 import { SITE } from "@/lib/site";
 import { PostHogProvider } from "@/components/posthog-provider";
 import { JsonLd } from "@/components/json-ld";
@@ -7,24 +7,20 @@ import "./globals.css";
 
 const inter = Inter({
   subsets: ["latin"],
+  weight: ["400", "500", "600", "700", "800"],
   variable: "--font-inter",
   display: "swap",
 });
 
-const spaceGrotesk = Space_Grotesk({
+const firaCode = Fira_Code({
   subsets: ["latin"],
-  variable: "--font-space-grotesk",
-  display: "swap",
-});
-
-const jetBrainsMono = JetBrains_Mono({
-  subsets: ["latin"],
-  variable: "--font-jetbrains-mono",
+  weight: ["400", "500"],
+  variable: "--font-fira-code",
   display: "swap",
 });
 
 export const viewport: Viewport = {
-  themeColor: "#131313",
+  themeColor: "#08132a",
   colorScheme: "dark",
   width: "device-width",
   initialScale: 1,
@@ -82,7 +78,6 @@ export const metadata: Metadata = {
   },
   icons: {
     icon: [
-      { url: "/favicon.ico" },
       { url: "/icon.svg", type: "image/svg+xml" },
     ],
     apple: [{ url: "/apple-icon.png" }],
@@ -99,10 +94,27 @@ export default function RootLayout({
   return (
     <html
       lang={SITE.lang}
-      className={`${inter.variable} ${spaceGrotesk.variable} ${jetBrainsMono.variable}`}
+      className={`dark ${inter.variable} ${firaCode.variable}`}
       suppressHydrationWarning
     >
-      <body className="min-h-screen bg-surface-1 text-ink antialiased">
+      <head>
+        {/* Material Symbols icon font — loaded directly because next/font does
+            not optimise icon fonts. We request only the subset we use. */}
+        <link
+          rel="preconnect"
+          href="https://fonts.googleapis.com"
+        />
+        <link
+          rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossOrigin=""
+        />
+        <link
+          rel="stylesheet"
+          href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&display=swap"
+        />
+      </head>
+      <body className="min-h-screen bg-[color:var(--color-bg)] text-[#fbf8fb] antialiased selection:bg-[#858fac] selection:text-[#08132a]">
         <PostHogProvider>{children}</PostHogProvider>
         <JsonLd />
       </body>

@@ -5,12 +5,11 @@ import {
   useRef,
   useState,
   useTransition,
-  type FormEvent,
   type FocusEvent,
+  type FormEvent,
 } from "react";
 import posthog from "posthog-js";
-import { SectionHeading } from "@/components/section-heading";
-import { SITE } from "@/lib/site";
+import { Icon } from "@/components/icon";
 import {
   validateContact,
   type ContactPayload,
@@ -22,14 +21,14 @@ import {
 } from "@/lib/recaptcha-client";
 
 type Status = "idle" | "submitting" | "success" | "error";
+type FieldErrors = Partial<
+  Record<"name" | "email" | "subject" | "message" | "form", string>
+>;
 
 export function Contact() {
-  const formId = useId();
   const renderedAt = useRef(Date.now());
   const [status, setStatus] = useState<Status>("idle");
-  const [errors, setErrors] = useState<
-    Partial<Record<"name" | "email" | "message" | "form", string>>
-  >({});
+  const [errors, setErrors] = useState<FieldErrors>({});
   const [, startTransition] = useTransition();
 
   async function onSubmit(event: FormEvent<HTMLFormElement>) {
@@ -43,6 +42,7 @@ export function Contact() {
     const payload: ContactPayload = {
       name: String(formData.get("name") ?? ""),
       email: String(formData.get("email") ?? ""),
+      subject: String(formData.get("subject") ?? ""),
       message: String(formData.get("message") ?? ""),
       company: String(formData.get("company") ?? ""),
       renderedAt: renderedAt.current,
@@ -75,7 +75,7 @@ export function Contact() {
 
       if (!res.ok) {
         const data = (await res.json().catch(() => ({}))) as {
-          errors?: typeof errors;
+          errors?: FieldErrors;
         };
         setErrors(data.errors ?? { form: "Invio non riuscito, riprova." });
         setStatus("error");
@@ -94,177 +94,145 @@ export function Contact() {
   }
 
   return (
-    <section
-      id="contatto"
-      className="relative bg-[color:var(--color-surface-1)] py-28 md:py-40"
-    >
-      <div className="mx-auto max-w-[1440px] px-6 md:px-10">
-        <SectionHeading
-          index="04"
-          eyebrow="Inizia un progetto"
-          title={
-            <>
-              Raccontami la tua{" "}
-              <span className="text-[color:var(--color-phosphor)]">idea</span>.
-            </>
-          }
-          lede="Compila il form o scrivimi direttamente. Rispondo entro un giorno lavorativo, in italiano o in inglese."
-        />
+    <section id="message-form" className="mx-auto max-w-4xl px-6 py-24">
+      <div className="mb-12 text-center">
+        <h2 className="flex items-center justify-center gap-3 font-headline text-3xl font-bold text-white">
+          <Icon name="mail" className="text-[#858fac]" />
+          Iniziamo un Progetto
+        </h2>
+        <div className="mx-auto mt-2 h-1 w-20 rounded-full bg-[#6d7793]" />
+        <p className="mt-4 text-slate-400">
+          Invia un messaggio diretto per approfondire collaborazioni tecniche o
+          consulenze.
+        </p>
+      </div>
 
-        <div className="mt-20 grid gap-16 md:grid-cols-12">
-          <aside className="md:col-span-4">
-            <dl className="space-y-8 font-mono text-[11px] uppercase tracking-[0.22em] text-ink-dim">
-              <div>
-                <dt>Email</dt>
-                <dd className="mt-2 font-sans text-base normal-case tracking-normal text-ink">
-                  <a
-                    href={`mailto:${SITE.email}`}
-                    className="underline underline-offset-4 hover:text-[color:var(--color-phosphor)]"
-                  >
-                    {SITE.email}
-                  </a>
-                </dd>
-              </div>
-              <div>
-                <dt>Telefono</dt>
-                <dd className="mt-2 font-sans text-base normal-case tracking-normal text-ink">
-                  <a
-                    href={`tel:${SITE.phone}`}
-                    className="hover:text-[color:var(--color-phosphor)]"
-                  >
-                    {SITE.phoneDisplay}
-                  </a>
-                </dd>
-              </div>
-              <div>
-                <dt>Sede</dt>
-                <dd className="mt-2 font-sans text-base normal-case tracking-normal text-ink">
-                  {SITE.address.locality}, {SITE.address.region}
-                </dd>
-              </div>
-              <div>
-                <dt>Partita IVA</dt>
-                <dd className="mt-2 font-sans text-base normal-case tracking-normal text-ink">
-                  {SITE.vat}
-                </dd>
-              </div>
-            </dl>
-          </aside>
-
-          <form
-            id={formId}
-            onSubmit={onSubmit}
-            onFocus={(event: FocusEvent<HTMLFormElement>) => {
-              // Lazy-load reCAPTCHA the first time the user interacts with
-              // the form, instead of on initial page load.
-              if (event.target.tagName === "INPUT" || event.target.tagName === "TEXTAREA") {
-                primeRecaptcha();
-              }
-            }}
-            noValidate
-            className="relative md:col-span-8"
+      <div className="terminal-glow glass-panel w-full overflow-hidden rounded-xl border border-slate-700/50 bg-[#1e2840]/60 p-8 shadow-2xl">
+        <form
+          className="space-y-6"
+          onSubmit={onSubmit}
+          onFocus={(event: FocusEvent<HTMLFormElement>) => {
+            if (
+              event.target.tagName === "INPUT" ||
+              event.target.tagName === "TEXTAREA"
+            ) {
+              primeRecaptcha();
+            }
+          }}
+          noValidate
+        >
+          {/* honeypot */}
+          <label
+            className="absolute left-[-9999px] top-[-9999px]"
+            aria-hidden="true"
           >
-            {/* honeypot — visually hidden, still in the DOM */}
-            <label
-              className="absolute left-[-9999px] top-[-9999px]"
-              aria-hidden="true"
+            Company
+            <input type="text" name="company" tabIndex={-1} autoComplete="off" />
+          </label>
+
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+            <TerminalField
+              label="Nome"
+              name="name"
+              type="text"
+              placeholder="Inserisci il tuo nome"
+              autoComplete="name"
+              required
+              error={errors.name}
+            />
+            <TerminalField
+              label="Email"
+              name="email"
+              type="email"
+              placeholder="latua@email.com"
+              autoComplete="email"
+              required
+              error={errors.email}
+            />
+          </div>
+
+          <TerminalField
+            label="Oggetto"
+            name="subject"
+            type="text"
+            placeholder="Di cosa vogliamo parlare?"
+            required
+            error={errors.subject}
+          />
+
+          <TerminalTextarea
+            label="Messaggio"
+            name="message"
+            placeholder="Descrivi brevemente il tuo progetto o la tua richiesta..."
+            rows={6}
+            required
+            error={errors.message}
+          />
+
+          {errors.form && (
+            <p className="font-mono text-xs text-red-400">{errors.form}</p>
+          )}
+          {status === "success" && (
+            <p className="font-mono text-xs text-emerald-400">
+              ➜ Messaggio ricevuto. Ti scrivo a breve, grazie.
+            </p>
+          )}
+
+          <div className="pt-4">
+            <button
+              type="submit"
+              disabled={status === "submitting"}
+              className="group flex w-full cursor-pointer items-center justify-center gap-3 rounded bg-[#6d7793] px-8 py-4 font-bold text-white transition-all hover:bg-opacity-90 active:scale-95 disabled:opacity-50 md:w-auto"
             >
-              Company
-              <input
-                type="text"
-                name="company"
-                tabIndex={-1}
-                autoComplete="off"
+              {status === "submitting" ? "Invio in corso…" : "Invia Messaggio"}
+              <Icon
+                name="send"
+                size={20}
+                className="transition-transform group-hover:translate-x-1"
               />
-            </label>
+            </button>
+          </div>
+        </form>
 
-            <div className="space-y-8 bg-[color:var(--color-surface-3)] p-8 md:p-10">
-              <Field
-                label="Nome"
-                name="name"
-                type="text"
-                autoComplete="name"
-                required
-                error={errors.name}
-              />
-              <Field
-                label="Email"
-                name="email"
-                type="email"
-                autoComplete="email"
-                required
-                error={errors.email}
-              />
-              <FieldTextarea
-                label="Messaggio"
-                name="message"
-                rows={6}
-                required
-                error={errors.message}
-              />
-
-              {errors.form && (
-                <p className="font-mono text-xs text-[color:var(--color-error)]">
-                  {errors.form}
-                </p>
-              )}
-              {status === "success" && (
-                <p className="font-mono text-xs text-[color:var(--color-phosphor)]">
-                  {">"} Messaggio ricevuto. Ti scrivo a breve, grazie.
-                </p>
-              )}
-
-              <div className="flex flex-wrap items-center justify-between gap-4 pt-2">
-                <p className="max-w-xs font-mono text-[10px] uppercase tracking-[0.18em] text-ink-dim">
-                  Invio gestito via Brevo · I dati non sono condivisi con terzi.
-                </p>
-                <button
-                  type="submit"
-                  disabled={status === "submitting"}
-                  className="btn-phosphor inline-flex items-center gap-2 px-7 py-4 font-mono text-xs uppercase tracking-[0.22em] disabled:opacity-50"
-                >
-                  <span aria-hidden>{">"}</span>
-                  {status === "submitting"
-                    ? "Invio in corso…"
-                    : "Esegui il deployment"}
-                </button>
-              </div>
-
-              {RECAPTCHA_ENABLED && (
-                <p className="pt-2 text-[10px] leading-relaxed text-ink-dim">
-                  Questo sito è protetto da reCAPTCHA e si applicano la{" "}
-                  <a
-                    href="https://policies.google.com/privacy"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="underline underline-offset-2 hover:text-ink"
-                  >
-                    Privacy Policy
-                  </a>{" "}
-                  e i{" "}
-                  <a
-                    href="https://policies.google.com/terms"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="underline underline-offset-2 hover:text-ink"
-                  >
-                    Termini di servizio
-                  </a>{" "}
-                  di Google.
-                </p>
-              )}
-            </div>
-          </form>
+        <div className="mt-8 flex items-center gap-2 font-mono text-xs text-slate-500">
+          <span className="text-emerald-400">➜</span>
+          <span className="text-sky-400">~/contact</span>
+          <span className="animate-pulse">█</span>
         </div>
+
+        {RECAPTCHA_ENABLED && (
+          <p className="mt-4 text-[10px] leading-relaxed text-slate-600">
+            Questo sito è protetto da reCAPTCHA e si applicano la{" "}
+            <a
+              href="https://policies.google.com/privacy"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="underline underline-offset-2 hover:text-slate-400"
+            >
+              Privacy Policy
+            </a>{" "}
+            e i{" "}
+            <a
+              href="https://policies.google.com/terms"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="underline underline-offset-2 hover:text-slate-400"
+            >
+              Termini di servizio
+            </a>{" "}
+            di Google.
+          </p>
+        )}
       </div>
     </section>
   );
 }
 
-function Field({
+function TerminalField({
   label,
   name,
   type,
+  placeholder,
   required,
   autoComplete,
   error,
@@ -272,36 +240,33 @@ function Field({
   label: string;
   name: string;
   type: "text" | "email";
+  placeholder?: string;
   required?: boolean;
   autoComplete?: string;
   error?: string;
 }) {
   const id = useId();
   return (
-    <div>
+    <div className="space-y-2">
       <label
         htmlFor={id}
-        className="flex items-center gap-2 font-mono text-[10.5px] uppercase tracking-[0.22em] text-ink-dim"
+        className="block font-mono text-sm text-[#858fac]"
       >
-        <span className="text-[color:var(--color-phosphor)]">{">"}</span>
-        {label}
-        {required && <span aria-hidden>*</span>}
+        # {label}
       </label>
       <input
         id={id}
         name={name}
         type={type}
+        placeholder={placeholder}
         required={required}
         autoComplete={autoComplete}
         aria-invalid={error ? "true" : undefined}
         aria-describedby={error ? `${id}-err` : undefined}
-        className="mt-2 block w-full border-b border-[color:var(--color-outline)]/40 bg-transparent py-3 font-sans text-[17px] text-ink placeholder:text-ink-dim focus:border-[color:var(--color-phosphor)] focus:outline-none"
+        className="w-full rounded border border-slate-700 bg-slate-800/50 p-3 font-mono text-sm text-slate-100 outline-none transition-all focus:border-[#858fac] focus:ring-1 focus:ring-[#858fac]"
       />
       {error && (
-        <p
-          id={`${id}-err`}
-          className="mt-2 font-mono text-[11px] text-[color:var(--color-error)]"
-        >
+        <p id={`${id}-err`} className="font-mono text-xs text-red-400">
           {error}
         </p>
       )}
@@ -309,44 +274,42 @@ function Field({
   );
 }
 
-function FieldTextarea({
+function TerminalTextarea({
   label,
   name,
+  placeholder,
   rows,
   required,
   error,
 }: {
   label: string;
   name: string;
+  placeholder?: string;
   rows: number;
   required?: boolean;
   error?: string;
 }) {
   const id = useId();
   return (
-    <div>
+    <div className="space-y-2">
       <label
         htmlFor={id}
-        className="flex items-center gap-2 font-mono text-[10.5px] uppercase tracking-[0.22em] text-ink-dim"
+        className="block font-mono text-sm text-[#858fac]"
       >
-        <span className="text-[color:var(--color-phosphor)]">{">"}</span>
-        {label}
-        {required && <span aria-hidden>*</span>}
+        # {label}
       </label>
       <textarea
         id={id}
         name={name}
         rows={rows}
+        placeholder={placeholder}
         required={required}
         aria-invalid={error ? "true" : undefined}
         aria-describedby={error ? `${id}-err` : undefined}
-        className="mt-2 block w-full resize-none border-b border-[color:var(--color-outline)]/40 bg-transparent py-3 font-sans text-[17px] text-ink placeholder:text-ink-dim focus:border-[color:var(--color-phosphor)] focus:outline-none"
+        className="min-h-[150px] w-full rounded border border-slate-700 bg-slate-800/50 p-3 font-mono text-sm text-slate-100 outline-none transition-all focus:border-[#858fac] focus:ring-1 focus:ring-[#858fac]"
       />
       {error && (
-        <p
-          id={`${id}-err`}
-          className="mt-2 font-mono text-[11px] text-[color:var(--color-error)]"
-        >
+        <p id={`${id}-err`} className="font-mono text-xs text-red-400">
           {error}
         </p>
       )}

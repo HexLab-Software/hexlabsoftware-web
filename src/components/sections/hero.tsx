@@ -1,137 +1,80 @@
-import { TerminalWindow } from "@/components/terminal-window";
 import { SITE } from "@/lib/site";
 
 /**
- * Hero — "Ingegneria Full Stack ad Alta Precisione".
- * Asymmetric 6/6 grid: editorial headline left, terminal code window right,
- * vertically offset by 40px per design md.
+ * Hero — faithful to the Stitch screen: centered headline with italic
+ * secondary accent, subtitle, and a full-width terminal mockup below.
  */
 export function Hero() {
   return (
     <section
       id="top"
-      className="crt-bloom relative overflow-hidden pt-32 md:pt-40"
+      className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden px-6"
     >
-      <div className="grid-overlay absolute inset-0 opacity-60" aria-hidden />
+      <div className="dot-grid pointer-events-none absolute inset-0 z-0 opacity-10" aria-hidden />
 
-      <div className="relative mx-auto grid max-w-[1440px] gap-16 px-6 pb-28 md:grid-cols-12 md:px-10 md:pb-40">
-        {/* Left column — editorial headline */}
-        <div className="md:col-span-7 md:pt-6">
-          <p className="mb-8 flex items-center gap-3 font-mono text-[11px] uppercase tracking-[0.28em] text-[color:var(--color-phosphor)]">
-            <span className="block h-px w-10 bg-[color:var(--color-phosphor)]" />
-            {SITE.legalName} · {SITE.address.locality}
-          </p>
-
-          <h1 className="font-display text-[clamp(2.75rem,7vw,6.25rem)] font-medium leading-[0.95] tracking-[-0.035em] text-ink">
-            Ingegneria
-            <br />
-            <span className="text-[color:var(--color-phosphor)]">Full&nbsp;Stack</span>
-            <br />
-            ad Alta Precisione<span className="cursor" aria-hidden />
+      <div className="z-10 w-full max-w-4xl space-y-12">
+        <div className="space-y-4 text-center">
+          <h1 className="font-headline text-5xl font-extrabold tracking-tighter text-white md:text-7xl">
+            Ingegneria Full Stack{" "}
+            <span className="italic text-[#feb069]">ad Alta Precisione.</span>
           </h1>
-
-          <p className="mt-10 max-w-xl text-lg leading-relaxed text-ink-muted">
-            Disegno, costruisco e manutengo sistemi scalabili per brand,
-            startup e PMI. Dal codice alla consegna, senza intermediari — con
-            uno standard <span className="text-ink">senior</span> dal 2011.
+          <p className="mx-auto max-w-2xl text-xl text-slate-400">
+            Progetto sistemi scalabili, infrastrutture resilienti e interfacce
+            utente intuitive per le sfide tecnologiche di domani.
           </p>
-
-          <div className="mt-10 flex flex-wrap items-center gap-4">
-            <a
-              href="#prenota"
-              className="btn-phosphor inline-flex items-center gap-3 px-7 py-4 font-mono text-xs uppercase tracking-[0.22em]"
-            >
-              <span aria-hidden>{">"}</span>
-              Prenota una call
-            </a>
-            <a
-              href="#contatto"
-              className="group inline-flex items-center gap-3 px-7 py-4 font-mono text-xs uppercase tracking-[0.22em] text-ink hover:text-[color:var(--color-phosphor)]"
-            >
-              <span className="size-2 bg-[color:var(--color-phosphor)]" aria-hidden />
-              Chiedi un preventivo
-            </a>
-          </div>
-
-          <dl className="mt-16 grid max-w-xl grid-cols-3 gap-6 font-mono text-[11px] uppercase tracking-[0.2em] text-ink-dim">
-            <div>
-              <dt>Anni attivi</dt>
-              <dd className="mt-2 font-display text-3xl font-medium normal-case tracking-tight text-ink">
-                14+
-              </dd>
-            </div>
-            <div>
-              <dt>Stack padroneggiati</dt>
-              <dd className="mt-2 font-display text-3xl font-medium normal-case tracking-tight text-ink">
-                9
-              </dd>
-            </div>
-            <div>
-              <dt>Uptime medio</dt>
-              <dd className="mt-2 font-display text-3xl font-medium normal-case tracking-tight text-ink">
-                99.9%
-              </dd>
-            </div>
-          </dl>
         </div>
 
-        {/* Right column — terminal code window, offset down by 40px */}
-        <div className="md:col-span-5 md:pt-16">
-          <TerminalWindow path="~/hexlab/stack.ts">
-            <pre className="overflow-x-auto px-5 py-6 font-mono text-[12.5px] leading-relaxed text-ink-muted">
-              <code>
-                <span className="text-[color:var(--color-phosphor)]/80">
-                  export const
-                </span>{" "}
-                <span className="text-ink">stack</span>{" "}
-                <span className="text-[color:var(--color-phosphor)]/80">=</span>{" "}
-                {"{"}
-                {"\n"}
-                {"  "}mobile:{" "}
-                <span className="text-[color:var(--color-phosphor)]">
-                  [&apos;iOS&apos;, &apos;Android&apos;]
-                </span>
-                ,{"\n"}
-                {"  "}web:{"    "}
-                <span className="text-[color:var(--color-phosphor)]">
-                  [&apos;Next.js&apos;, &apos;React&apos;]
-                </span>
-                ,{"\n"}
-                {"  "}backend:{" "}
-                <span className="text-[color:var(--color-phosphor)]">
-                  [&apos;Node&apos;, &apos;Laravel&apos;, &apos;Spring&apos;]
-                </span>
-                ,{"\n"}
-                {"  "}ai:{"     "}
-                <span className="text-[color:var(--color-phosphor)]">
-                  [&apos;LLM&apos;, &apos;RAG&apos;, &apos;Agents&apos;]
-                </span>
-                ,{"\n"}
-                {"  "}commerce:{" "}
-                <span className="text-[color:var(--color-phosphor)]">
-                  [&apos;Woo&apos;, &apos;Shopify&apos;, &apos;PS&apos;]
-                </span>
-                ,{"\n"}
-                {"  "}cloud:{"  "}
-                <span className="text-[color:var(--color-phosphor)]">
-                  [&apos;Vercel&apos;, &apos;AWS&apos;, &apos;Fly.io&apos;]
-                </span>
-                ,{"\n"}
-                {"}"} <span className="text-ink-dim">as const;</span>
-                {"\n\n"}
-                <span className="text-ink-dim">// v{new Date().getFullYear()} — {SITE.vat}</span>
-              </code>
-            </pre>
-          </TerminalWindow>
+        {/* Terminal mockup */}
+        <div className="terminal-glow w-full overflow-hidden rounded-xl border border-slate-700/50 bg-[#1e2840]/80 shadow-2xl">
+          <div className="flex items-center gap-2 border-b border-slate-700/50 bg-slate-800/50 px-4 py-2">
+            <div className="flex gap-1.5">
+              <div className="size-3 rounded-full bg-red-500/80" />
+              <div className="size-3 rounded-full bg-amber-500/80" />
+              <div className="size-3 rounded-full bg-emerald-500/80" />
+            </div>
+            <div className="flex-grow text-center font-mono text-xs text-slate-500">
+              bash — 80x24
+            </div>
+          </div>
+          <div className="p-6 font-mono text-sm leading-relaxed text-slate-300 md:text-base">
+            <div className="flex flex-wrap gap-2">
+              <span className="text-emerald-400">➜</span>
+              <span className="text-sky-400">~/hexlab</span>
+              <span className="text-slate-500">git:(main)</span>
+              <span className="text-slate-100">whoami</span>
+            </div>
+            <div className="mb-4 mt-1 text-slate-400">
+              {SITE.legalName} — Full Stack Engineer &amp; Cloud Architect.
+            </div>
 
-          <div className="mt-6 ml-auto flex max-w-[340px] items-center gap-4 bg-[color:var(--color-surface-3)] p-5">
-            <span className="relative flex size-2.5">
-              <span className="absolute inset-0 animate-ping bg-[color:var(--color-phosphor)] opacity-60" />
-              <span className="relative size-2.5 bg-[color:var(--color-phosphor)]" />
-            </span>
-            <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-ink-muted">
-              Disponibile per nuovi progetti
-            </p>
+            <div className="flex flex-wrap gap-2">
+              <span className="text-emerald-400">➜</span>
+              <span className="text-sky-400">~/hexlab</span>
+              <span className="text-slate-500">git:(main)</span>
+              <span className="text-slate-100">cat stack.json</span>
+            </div>
+            <div className="mb-4 mt-1 text-[#858fac]">
+              {"{"}
+              <br />
+              &nbsp;&nbsp;&quot;backend&quot;: [&quot;Laravel&quot;, &quot;Node.js&quot;, &quot;Python&quot;, &quot;PostgreSQL&quot;],
+              <br />
+              &nbsp;&nbsp;&quot;frontend&quot;: [&quot;React&quot;, &quot;Next.js&quot;, &quot;TypeScript&quot;, &quot;Tailwind&quot;],
+              <br />
+              &nbsp;&nbsp;&quot;mobile&quot;: [&quot;iOS&quot;, &quot;Android&quot;, &quot;React Native&quot;],
+              <br />
+              &nbsp;&nbsp;&quot;ai&quot;: [&quot;LLM&quot;, &quot;RAG&quot;, &quot;Agents&quot;, &quot;OpenAI&quot;, &quot;Anthropic&quot;],
+              <br />
+              &nbsp;&nbsp;&quot;devops&quot;: [&quot;AWS&quot;, &quot;Vercel&quot;, &quot;Docker&quot;, &quot;CI/CD&quot;]
+              <br />
+              {"}"}
+            </div>
+
+            <div className="flex flex-wrap gap-2">
+              <span className="text-emerald-400">➜</span>
+              <span className="text-sky-400">~/hexlab</span>
+              <span className="text-slate-500">git:(main)</span>
+              <span className="animate-pulse text-slate-100">█</span>
+            </div>
           </div>
         </div>
       </div>

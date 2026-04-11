@@ -1,22 +1,32 @@
-import { SectionHeading } from "@/components/section-heading";
+import { Icon } from "@/components/icon";
 import { PROJECTS, type Project } from "@/lib/projects";
 import { SITE } from "@/lib/site";
 
+const LANGUAGE_DOT: Record<string, string> = {
+  Python: "bg-sky-400",
+  PHP: "bg-indigo-400",
+  TypeScript: "bg-sky-400",
+  JavaScript: "bg-amber-400",
+  Go: "bg-emerald-400",
+  Rust: "bg-amber-400",
+};
+
 /**
- * Deterministic "generated" project visual — a CSS gradient + ASCII glyph.
- * Zero external asset requests, SSG-friendly, and it matches the
- * terminal aesthetic better than screenshot thumbnails would.
+ * Deterministic gradient tile that replaces stock imagery.
+ * The Stitch mockup used placeholder Google images, we don't ship those
+ * in prod — instead each project gets a reproducible gradient keyed on
+ * `project.hue` plus its mono glyph floating at the centre.
  */
 function ProjectVisual({ project }: { project: Project }) {
   const [h1, h2] = project.hue;
   return (
     <div
-      className="relative flex h-40 items-center justify-center overflow-hidden"
+      className="relative h-48 overflow-hidden bg-slate-800"
       style={{
         background: `
-          radial-gradient(ellipse at 20% 10%, hsl(${h1} 80% 55% / 0.22), transparent 55%),
-          radial-gradient(ellipse at 85% 90%, hsl(${h2} 70% 45% / 0.18), transparent 60%),
-          linear-gradient(135deg, var(--color-surface-4) 0%, var(--color-surface-2) 100%)
+          radial-gradient(ellipse at 20% 10%, hsl(${h1} 65% 35% / 0.55), transparent 55%),
+          radial-gradient(ellipse at 85% 85%, hsl(${h2} 60% 30% / 0.45), transparent 60%),
+          linear-gradient(135deg, #1e2840 0%, #0f172a 100%)
         `,
       }}
       aria-hidden
@@ -25,128 +35,83 @@ function ProjectVisual({ project }: { project: Project }) {
         className="absolute inset-0 opacity-[0.08]"
         style={{
           backgroundImage:
-            "linear-gradient(var(--color-phosphor) 1px, transparent 1px), linear-gradient(90deg, var(--color-phosphor) 1px, transparent 1px)",
+            "linear-gradient(#858fac 1px, transparent 1px), linear-gradient(90deg, #858fac 1px, transparent 1px)",
           backgroundSize: "24px 24px",
         }}
       />
       <span
-        className="relative font-display text-8xl leading-none text-[color:var(--color-phosphor)]/70"
-        style={{ textShadow: `0 0 40px hsl(${h1} 90% 55% / 0.5)` }}
+        className="absolute inset-0 flex items-center justify-center font-mono text-8xl leading-none text-[#858fac]/60 transition-transform duration-500 group-hover:scale-105"
+        style={{ textShadow: `0 0 48px hsl(${h1} 80% 55% / 0.35)` }}
       >
         {project.glyph}
-      </span>
-      <span className="absolute bottom-3 left-4 font-mono text-[10px] uppercase tracking-[0.18em] text-ink-dim">
-        {project.language}
       </span>
     </div>
   );
 }
 
-function ProjectCard({ project, index }: { project: Project; index: number }) {
+function ProjectCard({ project }: { project: Project }) {
+  const dotClass = LANGUAGE_DOT[project.language] ?? "bg-slate-400";
   return (
     <a
       href={project.href}
       target="_blank"
       rel="noopener noreferrer"
-      className="group relative flex flex-col bg-[color:var(--color-surface-3)] transition-colors duration-300 hover:bg-[color:var(--color-surface-4)]"
+      className="group relative flex flex-col overflow-hidden rounded-xl border border-slate-700/50 bg-[#1e2840] transition-all hover:border-[#6d7793]"
     >
       <ProjectVisual project={project} />
-      <div className="flex flex-1 flex-col p-7">
-        <div className="mb-5 flex items-start justify-between gap-4">
-          <div>
-            <p className="font-mono text-[10.5px] uppercase tracking-[0.24em] text-[color:var(--color-phosphor)]/80">
-              {String(index + 1).padStart(2, "0")} / {project.org}
-            </p>
-            <h3 className="mt-2 font-display text-xl font-medium leading-tight tracking-tight text-ink">
-              {project.name}
-            </h3>
-            <p className="mt-1 font-mono text-[11px] text-ink-dim">
-              {project.tagline}
-            </p>
+      <div className="p-6">
+        <div className="mb-4 flex items-start justify-between gap-4">
+          <h3 className="font-mono font-bold text-white">{project.name}</h3>
+          <div className="flex items-center gap-3 text-xs text-slate-500">
+            <span className="flex items-center gap-1 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5">
+              <Icon name="open_in_new" size={16} />
+            </span>
           </div>
-          <svg
-            className="mt-1 size-5 shrink-0 text-ink-dim transition-all group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-[color:var(--color-phosphor)]"
-            viewBox="0 0 20 20"
-            fill="none"
-            aria-hidden
-          >
-            <path
-              d="M5 15 L15 5 M8 5 H15 V12"
-              stroke="currentColor"
-              strokeWidth="1.5"
-              strokeLinecap="square"
-            />
-          </svg>
         </div>
-        <p className="flex-1 text-[14.5px] leading-relaxed text-ink-muted">
+        <p className="mb-6 text-sm leading-relaxed text-slate-400">
           {project.description}
         </p>
-        <ul className="mt-6 flex flex-wrap gap-2">
-          {project.tags.map((tag) => (
-            <li
-              key={tag}
-              className="chip-snip bg-[color:var(--color-surface-5)] px-2.5 py-1 font-mono text-[10px] uppercase tracking-[0.14em] text-ink-muted"
-            >
-              {tag}
-            </li>
-          ))}
-        </ul>
+        <div className="flex items-center gap-2">
+          <span className={`size-3 rounded-full ${dotClass}`} aria-hidden />
+          <span className="font-mono text-xs text-slate-500">
+            {project.language}
+          </span>
+        </div>
       </div>
     </a>
   );
 }
 
 export function Projects() {
+  // Stitch mockup shows 3 cards — keep the top three pinned repos.
+  const top = PROJECTS.slice(0, 3);
   return (
     <section
-      id="progetti"
-      className="relative bg-[color:var(--color-surface-1)] py-28 md:py-40"
+      id="projects"
+      className="border-y border-slate-700/50 bg-[#1e2840]/30 py-24"
     >
-      <div className="mx-auto max-w-[1440px] px-6 md:px-10">
-        <SectionHeading
-          index="02"
-          eyebrow="Open Source · Progetti"
-          title={
-            <>
-              Codice che spedisco,
-              <br />
-              <span className="text-[color:var(--color-phosphor)]">pubblicamente</span>.
-            </>
-          }
-          lede="Una selezione dei miei progetti open source, ordinati per importanza. Ogni repo è in produzione o ha servito un cliente reale."
-        />
-
-        <div className="mt-20 grid gap-[1px] bg-[color:var(--color-surface-2)] md:grid-cols-2 lg:grid-cols-3">
-          {PROJECTS.map((p, i) => (
-            <ProjectCard key={p.name} project={p} index={i} />
-          ))}
+      <div className="mx-auto max-w-7xl px-6">
+        <div className="mb-16 flex flex-col items-start justify-between gap-6 md:flex-row md:items-end">
+          <div>
+            <h2 className="flex items-center gap-3 font-headline text-3xl font-bold text-white">
+              <Icon name="code" className="text-[#858fac]" />
+              Open Source Projects
+            </h2>
+            <div className="mt-2 h-1 w-20 rounded-full bg-[#6d7793]" />
+          </div>
+          <a
+            href={SITE.social.github}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-2 font-medium text-[#858fac] hover:underline"
+          >
+            Vedi tutti su GitHub <Icon name="open_in_new" size={16} />
+          </a>
         </div>
-
-        <div className="mt-16 flex flex-wrap items-center justify-between gap-4 font-mono text-[11px] uppercase tracking-[0.22em] text-ink-dim">
-          <p>
-            <span className="text-[color:var(--color-phosphor)]">{">"}</span>{" "}
-            Tutti i repo su{" "}
-            <a
-              href={SITE.social.github}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-ink underline underline-offset-4 hover:text-[color:var(--color-phosphor)]"
-            >
-              github.com/Gybra
-            </a>{" "}
-            ·{" "}
-            <a
-              href={SITE.social.githubOrg}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-ink underline underline-offset-4 hover:text-[color:var(--color-phosphor)]"
-            >
-              /HexLab-Software
-            </a>
-          </p>
-          <p className="text-ink-dim">
-            MIT · Apache-2.0 · GPL
-          </p>
+        <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
+          {top.map((project) => (
+            <ProjectCard key={project.name} project={project} />
+          ))}
         </div>
       </div>
     </section>

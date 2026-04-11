@@ -1,115 +1,158 @@
-import { SectionHeading } from "@/components/section-heading";
+import { Icon } from "@/components/icon";
 
 type Skill = {
-  index: string;
+  icon: string;
   title: string;
   description: string;
   stack: readonly string[];
+  tone: "sky" | "emerald" | "amber" | "purple";
+  span: string;
+  size?: "lg" | "md" | "sm";
+  /** layout mode — "horizontal" is the wide bottom card with icon left */
+  orientation?: "vertical" | "horizontal";
+};
+
+const TONE_CLASSES: Record<
+  Skill["tone"],
+  { iconBg: string; iconText: string; chip: string }
+> = {
+  sky: {
+    iconBg: "bg-sky-500/20",
+    iconText: "text-sky-400",
+    chip: "bg-sky-500/10 text-sky-400 border-sky-500/20",
+  },
+  emerald: {
+    iconBg: "bg-emerald-500/20",
+    iconText: "text-emerald-400",
+    chip: "bg-emerald-500/10 text-emerald-400 border-emerald-500/20",
+  },
+  amber: {
+    iconBg: "bg-amber-500/20",
+    iconText: "text-amber-400",
+    chip: "bg-amber-500/10 text-amber-400 border-amber-500/20",
+  },
+  purple: {
+    iconBg: "bg-purple-500/20",
+    iconText: "text-purple-400",
+    chip: "bg-purple-500/10 text-purple-400 border-purple-500/20",
+  },
 };
 
 const SKILLS: readonly Skill[] = [
   {
-    index: "01",
-    title: "Full Stack Engineering",
+    icon: "web",
+    title: "Frontend Engineering",
     description:
-      "Progetto e implemento l'intero ciclo di vita di un prodotto: API type-safe, database modellati per scalare, frontend SSR pronti per la ricerca.",
-    stack: ["Next.js", "React", "TypeScript", "Node", "Laravel", "Spring Boot"],
+      "Sviluppo interfacce reattive e performanti con un focus ossessivo sull'esperienza utente e l'accessibilità.",
+    stack: ["React", "Next.js", "TypeScript", "Tailwind"],
+    tone: "sky",
+    span: "md:col-span-2",
+    size: "lg",
   },
   {
-    index: "02",
-    title: "Mobile & Multi-Platform",
+    icon: "database",
+    title: "Backend & Distributed Systems",
     description:
-      "App native iOS/Android e cross-platform, con CI/CD automatizzato su store e pipeline di qualità che intercettano i bug prima dei review.",
-    stack: ["iOS", "Android", "React Native", "Firebase", "Fastlane"],
+      "Architetture a microservizi scalabili, ottimizzazione di database e gestione di flussi dati ad alto volume.",
+    stack: ["Laravel", "Node.js", "PostgreSQL", "Redis"],
+    tone: "emerald",
+    span: "md:col-span-2",
+    size: "lg",
   },
   {
-    index: "03",
-    title: "AI & LLM Systems",
+    icon: "cloud",
+    title: "DevOps & Infrastructure",
     description:
-      "Integro modelli linguistici in prodotti reali: RAG, agenti autonomi, pipeline di ingestion e valutazione. Dal POC al deploy in produzione.",
-    stack: ["OpenAI", "Anthropic", "LangGraph", "Embeddings", "Vector DB"],
+      "Automazione dei deployment e gestione cloud-native attraverso IaC.",
+    stack: ["AWS", "Docker"],
+    tone: "amber",
+    span: "md:col-span-2 lg:col-span-1",
+    size: "md",
   },
   {
-    index: "04",
-    title: "E-commerce & Headless",
+    icon: "strategy",
+    title: "Mobile, AI & Tech Strategy",
     description:
-      "Negozi ad alte conversioni su WooCommerce, PrestaShop, Shopify — con personalizzazioni al core, integrazioni logistiche ed ERP.",
-    stack: ["WooCommerce", "PrestaShop", "Shopify", "Stripe", "Adyen"],
-  },
-  {
-    index: "05",
-    title: "Cloud & DevOps",
-    description:
-      "Infrastruttura dichiarativa, osservabilità end-to-end e cost-control. Deploy immutabili su Vercel, AWS e container orchestrati.",
-    stack: ["Vercel", "AWS", "Docker", "Terraform", "GitHub Actions"],
-  },
-  {
-    index: "06",
-    title: "Performance & SEO",
-    description:
-      "Core Web Vitals verde-scuro, schema.org curato, asset budget disciplinato: siti che i motori amano e gli utenti non abbandonano.",
-    stack: ["Lighthouse", "Web Vitals", "JSON-LD", "ISR", "Edge Cache"],
+      "App native iOS/Android, integrazione di modelli linguistici in prodotti reali, mentoring tecnico e traduzione di obiettivi di business in soluzioni robuste.",
+    stack: ["iOS", "Android", "LLM", "System Design", "Mentorship"],
+    tone: "purple",
+    span: "md:col-span-2 lg:col-span-3",
+    size: "lg",
+    orientation: "horizontal",
   },
 ];
 
 function SkillCard({ skill }: { skill: Skill }) {
-  return (
-    <article className="group relative flex h-full flex-col justify-between bg-[color:var(--color-surface-3)] p-8 transition-colors duration-300 hover:bg-[color:var(--color-surface-4)]">
-      <div>
-        <div className="mb-8 flex items-center justify-between">
-          <span className="font-mono text-[11px] uppercase tracking-[0.28em] text-[color:var(--color-phosphor)]/80">
-            {skill.index}
-          </span>
-          <span
-            className="size-2.5 bg-[color:var(--color-phosphor)]/40 transition-colors group-hover:bg-[color:var(--color-phosphor)]"
-            aria-hidden
-          />
-        </div>
-        <h3 className="font-display text-2xl font-medium leading-tight tracking-tight text-ink">
-          {skill.title}
-        </h3>
-        <p className="mt-4 text-[15px] leading-relaxed text-ink-muted">
-          {skill.description}
-        </p>
-      </div>
-      <ul className="mt-10 flex flex-wrap gap-2">
+  const tone = TONE_CLASSES[skill.tone];
+  const titleClass =
+    skill.size === "md"
+      ? "text-xl font-headline font-bold text-white mb-3"
+      : "text-2xl font-headline font-bold text-white mb-3";
+  const descClass =
+    skill.size === "md"
+      ? "text-slate-400 mb-6 text-sm leading-relaxed"
+      : "text-slate-400 mb-6 leading-relaxed";
+
+  const iconBlock = (
+    <div
+      className={`mb-6 flex size-12 items-center justify-center rounded-lg ${tone.iconBg}`}
+    >
+      <Icon name={skill.icon} className={tone.iconText} size={24} />
+    </div>
+  );
+
+  const body = (
+    <>
+      <h3 className={titleClass}>{skill.title}</h3>
+      <p className={descClass}>{skill.description}</p>
+      <div className="flex flex-wrap gap-2">
         {skill.stack.map((tech) => (
-          <li
+          <span
             key={tech}
-            className="chip-snip bg-[color:var(--color-surface-5)] px-3 py-1.5 font-mono text-[10.5px] uppercase tracking-[0.14em] text-ink-muted"
+            className={`rounded border px-3 py-1 font-mono text-xs ${tone.chip}`}
           >
             {tech}
-          </li>
+          </span>
         ))}
-      </ul>
-    </article>
+      </div>
+    </>
+  );
+
+  if (skill.orientation === "horizontal") {
+    return (
+      <div
+        className={`glass-panel flex flex-col items-start gap-8 rounded-2xl border border-slate-700/50 bg-surface-container-lowest/5 p-8 transition-all hover:border-[#858fac] md:flex-row ${skill.span}`}
+      >
+        <div className="flex-shrink-0">{iconBlock}</div>
+        <div>{body}</div>
+      </div>
+    );
+  }
+
+  return (
+    <div
+      className={`glass-panel rounded-2xl border border-slate-700/50 bg-surface-container-lowest/5 p-8 transition-all hover:border-[#858fac] ${skill.span}`}
+    >
+      {iconBlock}
+      {body}
+    </div>
   );
 }
 
 export function Skills() {
   return (
-    <section
-      id="competenze"
-      className="relative bg-[color:var(--color-surface-2)] py-28 md:py-40"
-    >
-      <div className="mx-auto max-w-[1440px] px-6 md:px-10">
-        <SectionHeading
-          index="01"
-          eyebrow="Competenze"
-          title={
-            <>
-              Sei discipline,
-              <br />
-              <span className="text-[color:var(--color-phosphor)]">un solo</span> interlocutore.
-            </>
-          }
-          lede="Lavoro come single point of contact: dall'architettura iniziale alla manutenzione evolutiva. Niente catene di subfornitori, niente handoff persi."
-        />
-        <div className="mt-20 grid gap-[1px] bg-[color:var(--color-surface-1)] md:grid-cols-2 lg:grid-cols-3">
-          {SKILLS.map((skill) => (
-            <SkillCard key={skill.index} skill={skill} />
-          ))}
-        </div>
+    <section id="stack" className="mx-auto max-w-7xl px-6 py-24">
+      <div className="mb-16">
+        <h2 className="flex items-center gap-3 font-headline text-3xl font-bold text-white">
+          <Icon name="terminal" className="text-[#858fac]" />
+          Competenze Verticali
+        </h2>
+        <div className="mt-2 h-1 w-20 rounded-full bg-[#6d7793]" />
+      </div>
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-4">
+        {SKILLS.map((skill) => (
+          <SkillCard key={skill.title} skill={skill} />
+        ))}
       </div>
     </section>
   );

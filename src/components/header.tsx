@@ -2,67 +2,55 @@
 
 import { useEffect, useState } from "react";
 import { Logo } from "@/components/logo";
-import { SITE } from "@/lib/site";
 
 const NAV_ITEMS = [
-  { href: "#competenze", label: "Competenze" },
-  { href: "#progetti", label: "Progetti" },
-  { href: "#prenota", label: "Prenota" },
-  { href: "#contatto", label: "Contatto" },
+  { href: "#stack", label: "Stack" },
+  { href: "#projects", label: "Projects" },
+  { href: "#contact", label: "Contact" },
+  { href: "#message-form", label: "Preventivo" },
 ] as const;
 
 export function Header() {
-  const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 8);
-    onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
+    if (!open) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setOpen(false);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [open]);
 
   return (
-    <header
-      data-scrolled={scrolled}
-      className="fixed inset-x-0 top-0 z-50 transition-colors duration-300 data-[scrolled=true]:backdrop-blur-xl data-[scrolled=true]:bg-[color:var(--color-surface-1)]/70"
-    >
-      <div className="mx-auto flex max-w-[1440px] items-center justify-between px-6 py-5 md:px-10">
+    <nav className="fixed top-0 z-50 w-full border-b border-slate-700/50 bg-[#1E2840] shadow-lg shadow-black/20">
+      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-6 font-['Inter'] tracking-tight antialiased">
         <a
           href="#top"
-          className="group relative z-10 text-ink transition-colors hover:text-[color:var(--color-phosphor)]"
-          aria-label={`${SITE.name} — home`}
+          className="flex items-center gap-2 text-xl font-mono font-bold text-slate-100"
+          aria-label="HexLab Software — home"
         >
-          <Logo />
+          <Logo size={36} />
         </a>
 
-        <nav aria-label="Primario" className="hidden md:block">
-          <ul className="flex items-center gap-1 font-mono text-[11px] uppercase tracking-[0.22em]">
-            {NAV_ITEMS.map((item, idx) => (
-              <li key={item.href}>
-                <a
-                  href={item.href}
-                  className="group relative inline-flex items-center gap-2 px-4 py-2 text-ink-dim transition-colors hover:text-ink"
-                >
-                  <span className="text-[color:var(--color-phosphor)]/60 group-hover:text-[color:var(--color-phosphor)]">
-                    {String(idx + 1).padStart(2, "0")}
-                  </span>
-                  <span>{item.label}</span>
-                </a>
-              </li>
-            ))}
-          </ul>
-        </nav>
-
-        <div className="hidden items-center gap-3 md:flex">
-          <a
-            href="#prenota"
-            className="btn-phosphor inline-flex items-center gap-2 px-5 py-2.5 font-mono text-[11px] uppercase tracking-[0.22em]"
-          >
-            <span aria-hidden>{">"}</span>
-            <span>Prenota call</span>
-          </a>
+        <div className="hidden items-center gap-8 md:flex">
+          {NAV_ITEMS.map((item) => (
+            <a
+              key={item.href}
+              href={item.href}
+              className="cursor-pointer font-medium text-slate-400 transition-colors duration-200 hover:text-slate-100 active:scale-95"
+            >
+              {item.label}
+            </a>
+          ))}
         </div>
+
+        <a
+          href="#contact"
+          className="hidden rounded bg-[#6d7793] px-5 py-2 font-medium text-white transition-all hover:bg-opacity-90 active:scale-95 md:inline-flex"
+        >
+          Prenota call
+        </a>
 
         <button
           type="button"
@@ -70,15 +58,14 @@ export function Header() {
           aria-controls="mobile-nav"
           aria-label="Apri navigazione"
           onClick={() => setOpen((v) => !v)}
-          className="relative z-10 flex size-10 items-center justify-center text-ink md:hidden"
+          className="flex size-10 items-center justify-center text-slate-100 md:hidden"
         >
-          <span className="sr-only">Menu</span>
           <svg width="22" height="22" viewBox="0 0 22 22" fill="none" aria-hidden>
             <path
-              d="M2 6h18M2 11h18M2 16h18"
+              d={open ? "M4 4 L18 18 M18 4 L4 18" : "M2 6h18M2 11h18M2 16h18"}
               stroke="currentColor"
-              strokeWidth="1.5"
-              strokeLinecap="square"
+              strokeWidth="1.75"
+              strokeLinecap="round"
             />
           </svg>
         </button>
@@ -87,36 +74,32 @@ export function Header() {
       {open && (
         <div
           id="mobile-nav"
-          className="border-t border-[color:var(--color-outline-ghost)]/30 bg-[color:var(--color-surface-1)]/95 backdrop-blur-xl md:hidden"
+          className="border-t border-slate-700/50 bg-[#1E2840]/98 backdrop-blur-xl md:hidden"
         >
-          <ul className="flex flex-col px-6 py-4 font-mono text-sm uppercase tracking-[0.18em]">
-            {NAV_ITEMS.map((item, idx) => (
+          <ul className="flex flex-col gap-1 px-6 py-4">
+            {NAV_ITEMS.map((item) => (
               <li key={item.href}>
                 <a
                   href={item.href}
                   onClick={() => setOpen(false)}
-                  className="flex items-center gap-3 py-3 text-ink-dim hover:text-[color:var(--color-phosphor)]"
+                  className="block py-3 font-medium text-slate-400 hover:text-slate-100"
                 >
-                  <span className="text-[color:var(--color-phosphor)]/60">
-                    {String(idx + 1).padStart(2, "0")}
-                  </span>
                   {item.label}
                 </a>
               </li>
             ))}
-            <li className="pt-2">
+            <li className="pt-3">
               <a
-                href="#prenota"
+                href="#contact"
                 onClick={() => setOpen(false)}
-                className="btn-phosphor inline-flex w-full items-center justify-center gap-2 px-5 py-3 text-[11px]"
+                className="block rounded bg-[#6d7793] px-5 py-3 text-center font-medium text-white"
               >
-                <span aria-hidden>{">"}</span>
                 Prenota call
               </a>
             </li>
           </ul>
         </div>
       )}
-    </header>
+    </nav>
   );
 }
