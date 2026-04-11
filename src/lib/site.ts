@@ -46,8 +46,9 @@ export const SITE = {
   },
   cal: {
     // Cal.com free embed (no Platform plan needed) — username and event slug
-    username: "hexlabsoftware",
-    eventSlug: "callme",
+    // Full link: https://cal.com/oreste-acacia-jnmmbg/hexlab-software
+    username: "oreste-acacia-jnmmbg",
+    eventSlug: "hexlab-software",
   },
   posthog: {
     key: "phc_duH8e86Om4Ao7A7tyMND4KQWJFYe1ZMBo1iDfbfpGwl",
