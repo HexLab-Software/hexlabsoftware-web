@@ -11,6 +11,7 @@ function initPostHog() {
   if (initialised || typeof window === "undefined") return;
   posthog.init(SITE.posthog.key, {
     api_host: SITE.posthog.host,
+    ui_host: SITE.posthog.uiHost,
     person_profiles: "identified_only",
     capture_pageview: false,
     capture_pageleave: true,

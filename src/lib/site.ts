@@ -52,7 +52,10 @@ export const SITE = {
   },
   posthog: {
     key: "phc_duH8e86Om4Ao7A7tyMND4KQWJFYe1ZMBo1iDfbfpGwl",
-    host: "https://app.posthog.com",
+    // Routed through the Next.js reverse proxy (see next.config.ts `rewrites`)
+    // so ad/tracker blockers don't kill event delivery.
+    host: "/ingest",
+    uiHost: "https://us.posthog.com",
   },
 } as const;
 

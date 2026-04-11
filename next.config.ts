@@ -12,6 +12,34 @@ const nextConfig: NextConfig = {
   },
 
   /**
+   * PostHog reverse proxy. Browser ad/tracker blockers (Brave Shields,
+   * uBlock Origin, AdGuard) blacklist `*.i.posthog.com`, dropping events
+   * for ~10-25% of visitors. Rewriting through our own origin bypasses
+   * the blocklists without exposing any new surface area — the upstream
+   * PostHog endpoints are public anyway.
+   *
+   * Client config must then point `api_host` at `/ingest` and keep
+   * `ui_host` on the real PostHog UI so dashboard deep-links still work.
+   */
+  skipTrailingSlashRedirect: true,
+  async rewrites() {
+    return [
+      {
+        source: "/ingest/static/:path*",
+        destination: "https://us-assets.i.posthog.com/static/:path*",
+      },
+      {
+        source: "/ingest/:path*",
+        destination: "https://us.i.posthog.com/:path*",
+      },
+      {
+        source: "/ingest/decide",
+        destination: "https://us.i.posthog.com/decide",
+      },
+    ];
+  },
+
+  /**
    * 301 redirects preserving link equity from the legacy PHP site at
    * hexlabsoftware.it. Every path below was indexed by Google from the
    * Bootstrap/jQuery era and must land the user (and the crawler) on
