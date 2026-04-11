@@ -52,8 +52,7 @@ export const SITE = {
   },
   posthog: {
     key: process.env.NEXT_PUBLIC_POSTHOG_KEY ?? "",
-    // Routed through the Next.js reverse proxy (see next.config.ts `rewrites`)
-    // so ad/tracker blockers don't kill event delivery.
+    // Reverse-proxied in next.config.ts to bypass tracker blockers.
     host: "/ingest",
     uiHost: "https://us.posthog.com",
   },

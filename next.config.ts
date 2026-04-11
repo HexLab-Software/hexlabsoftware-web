@@ -11,16 +11,8 @@ const nextConfig: NextConfig = {
     "/twitter-image": ["./src/lib/assets/*.ttf"],
   },
 
-  /**
-   * PostHog reverse proxy. Browser ad/tracker blockers (Brave Shields,
-   * uBlock Origin, AdGuard) blacklist `*.i.posthog.com`, dropping events
-   * for ~10-25% of visitors. Rewriting through our own origin bypasses
-   * the blocklists without exposing any new surface area — the upstream
-   * PostHog endpoints are public anyway.
-   *
-   * Client config must then point `api_host` at `/ingest` and keep
-   * `ui_host` on the real PostHog UI so dashboard deep-links still work.
-   */
+  // Reverse-proxy PostHog through `/ingest` — ad blockers blacklist
+  // `*.i.posthog.com` and drop events for a meaningful slice of visitors.
   skipTrailingSlashRedirect: true,
   async rewrites() {
     return [
