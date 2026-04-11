@@ -9,7 +9,7 @@ export function Hero() {
   return (
     <section
       id="top"
-      className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden px-6"
+      className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden px-6 pt-32 pb-16 md:pt-40"
     >
       <div className="dot-grid pointer-events-none absolute inset-0 z-0 opacity-10" aria-hidden />
 
