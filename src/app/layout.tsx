@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Inter, Fira_Code } from "next/font/google";
 import { SITE } from "@/lib/site";
 import { Analytics } from "@vercel/analytics/next";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import { PostHogProvider } from "@/components/posthog-provider";
 import { JsonLd } from "@/components/json-ld";
 import "./globals.css";
@@ -112,6 +113,7 @@ export default function RootLayout({
         <PostHogProvider>{children}</PostHogProvider>
         <JsonLd />
         <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   );
