@@ -15,7 +15,11 @@
   --color-bg: #08132a;
   --color-surface: #1e2840;
   --color-surface-2: #151f36;
-  --color-surface-ghost: rgba(30, 40, 64, 0.4);
+  --color-surface-ghost: color-mix(
+    in srgb,
+    #1e2840 40%,
+    transparent
+  );
   --color-surface-container-lowest: #0b1426;
 
   /* accents — matching the Stitch Tailwind config */
@@ -30,6 +34,13 @@
   --color-ink-muted: #94a3b8;   /* slate-400 */
   --color-ink-dim: #64748b;     /* slate-500 */
   --color-ink-darker: #334155;  /* slate-700 */
+
+  /* shadows — referenced by .terminal-glow and .nav-shell.is-scrolled */
+  --shadow-terminal-glow:
+    0 0 20px color-mix(in srgb, var(--color-primary) 15%, transparent);
+  --shadow-terminal-glow-strong:
+    0 0 36px color-mix(in srgb, var(--color-on-primary-container) 28%, transparent);
+  --shadow-nav-scrolled: 0 12px 32px -12px rgba(0, 0, 0, 0.55);
 
   /* fonts — wired to next/font variables */
   --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
@@ -57,19 +68,23 @@ body {
 
 /* Signature shadow for terminal & card panels */
 .terminal-glow {
-  box-shadow: 0 0 20px rgba(109, 119, 147, 0.15);
+  box-shadow: var(--shadow-terminal-glow);
 }
 
 /* Glass panel used on skill cards, booking shell, contact form */
 .glass-panel {
-  background: rgba(30, 40, 64, 0.4);
+  background: var(--color-surface-ghost);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
 }
 
 /* Dot grid background for hero */
 .dot-grid {
-  background-image: radial-gradient(circle at 2px 2px, #6d7793 1px, transparent 0);
+  background-image: radial-gradient(
+    circle at 2px 2px,
+    var(--color-primary) 1px,
+    transparent 0
+  );
   background-size: 40px 40px;
 }
 
@@ -94,13 +109,13 @@ body {
 
 /* Selection */
 ::selection {
-  background: #858fac;
-  color: #08132a;
+  background: var(--color-on-primary-container);
+  color: var(--color-bg);
 }
 
 /* Focus visible */
 :focus-visible {
-  outline: 2px solid #858fac;
+  outline: 2px solid var(--color-on-primary-container);
   outline-offset: 3px;
 }
 
@@ -111,10 +126,175 @@ body {
   pointer-events: none !important;
 }
 
-/* Reduced motion */
+/* ---------- Animations ---------- */
+
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(28px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes glow-pulse {
+  0%, 100% { box-shadow: var(--shadow-terminal-glow); }
+  50%      { box-shadow: var(--shadow-terminal-glow-strong); }
+}
+
+@keyframes caret-blink {
+  0%, 49%   { opacity: 1; }
+  50%, 100% { opacity: 0; }
+}
+
+/* Hero on-load stagger — the top-level children of `.hero-stagger`
+   fade up sequentially. */
+.hero-stagger > * {
+  opacity: 0;
+  animation: fade-up 0.95s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+.hero-stagger > *:nth-child(1) { animation-delay: 0.15s; }
+.hero-stagger > *:nth-child(2) { animation-delay: 0.45s; }
+
+/* The terminal box also pulses after entering. The shorthand below
+   combines BOTH animations so that fade-up is not clobbered by the
+   pulse declaration — setting `animation` on a child element replaces
+   the value inherited from `.hero-stagger > *`, so they must live in
+   the same shorthand.
+   The pulse runs a FINITE number of iterations (not `infinite`) because
+   box-shadow animation triggers a paint every frame: on macOS a visible-
+   but-unfocused window still runs CSS animations at full framerate, so
+   an infinite loop keeps the GPU busy while the user is doing something
+   else. 3 cycles = 18s of "settling in", then it stops on the base
+   shadow (backwards fill-mode is default for fade-up / forwards covers
+   only the first animation in the shorthand). */
+.hero-stagger > .terminal-glow-pulse {
+  animation:
+    fade-up 0.95s cubic-bezier(0.16, 1, 0.3, 1) 0.45s forwards,
+    glow-pulse 6s ease-in-out 2.5s 3;
+}
+
+/* Terminal body lines fade in once the terminal box has arrived. */
+.term-line {
+  opacity: 0;
+  animation: fade-in 0.5s ease-out forwards;
+}
+.term-line-1 { animation-delay: 1.10s; }
+.term-line-2 { animation-delay: 1.35s; }
+.term-line-3 { animation-delay: 1.65s; }
+.term-line-4 { animation-delay: 1.95s; }
+.term-line-5 { animation-delay: 2.25s; }
+
+/* Scroll reveal — elements start invisible and fade-up when the
+   IntersectionObserver in `<Reveal>` adds `.in-view`. */
+.reveal {
+  opacity: 0;
+  transform: translateY(28px);
+  transition:
+    opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.reveal.in-view {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Grid stagger — when the grid wrapper is in-view, children animate in
+   sequentially via nth-child delays. One observer per grid. */
+.reveal-stagger > * {
+  opacity: 0;
+  transform: translateY(24px);
+  transition:
+    opacity 0.85s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.85s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.reveal-stagger.in-view > * {
+  opacity: 1;
+  transform: translateY(0);
+}
+.reveal-stagger.in-view > *:nth-child(1) { transition-delay: 0.05s; }
+.reveal-stagger.in-view > *:nth-child(2) { transition-delay: 0.15s; }
+.reveal-stagger.in-view > *:nth-child(3) { transition-delay: 0.25s; }
+.reveal-stagger.in-view > *:nth-child(4) { transition-delay: 0.35s; }
+.reveal-stagger.in-view > *:nth-child(5) { transition-delay: 0.45s; }
+.reveal-stagger.in-view > *:nth-child(6) { transition-delay: 0.55s; }
+
+/* The section accent bar grows horizontally when its Reveal parent
+   enters view. */
+.accent-bar {
+  transform-origin: left;
+  transform: scaleX(0);
+  transition: transform 0.9s cubic-bezier(0.16, 1, 0.3, 1) 0.35s;
+}
+.reveal.in-view .accent-bar,
+.reveal-stagger.in-view .accent-bar {
+  transform: scaleX(1);
+}
+
+/* Header picks up a shadow + glass blur once the page scrolls. */
+.nav-shell {
+  transition:
+    background-color 0.3s ease,
+    box-shadow 0.3s ease,
+    backdrop-filter 0.3s ease;
+}
+.nav-shell.is-scrolled {
+  background-color: color-mix(
+    in srgb,
+    var(--color-primary-container) 78%,
+    transparent
+  );
+  backdrop-filter: blur(14px) saturate(1.2);
+  -webkit-backdrop-filter: blur(14px) saturate(1.2);
+  box-shadow: var(--shadow-nav-scrolled);
+}
+
+/* Underline sweep on nav links. */
+.nav-link {
+  position: relative;
+}
+.nav-link::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -6px;
+  height: 1px;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.nav-link:hover::after {
+  transform: scaleX(1);
+  transform-origin: left;
+}
+
+/* No-JS fallback — ensure content is visible if IntersectionObserver
+   never fires because scripting is disabled. */
+@media (scripting: none) {
+  .reveal,
+  .reveal-stagger > * {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+  .accent-bar {
+    transform: scaleX(1) !important;
+  }
+}
+
+/* Reduced motion — kill anything that moves. */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     animation-duration: 0.001ms !important;
     transition-duration: 0.001ms !important;
   }
+  .reveal,
+  .reveal-stagger > * {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+  .accent-bar { transform: scaleX(1) !important; }
+  .terminal-glow-pulse { animation: none !important; }
 }

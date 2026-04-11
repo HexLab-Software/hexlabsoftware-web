@@ -3,6 +3,7 @@
 import { useEffect } from "react";
 import Cal, { getCalApi } from "@calcom/embed-react";
 import { Icon } from "@/components/icon";
+import { Reveal } from "@/components/reveal";
 import { SITE } from "@/lib/site";
 
 /**
@@ -39,10 +40,12 @@ export function Booking() {
 
   return (
     <section id="booking" className="mx-auto max-w-4xl px-6 py-24 text-center">
-      <h2 className="mb-4 font-headline text-3xl font-bold text-white">
-        {SITE.booking.heading}
-      </h2>
-      <p className="mb-12 text-slate-400">{SITE.booking.subtitle}</p>
+      <Reveal>
+        <h2 className="mb-4 font-headline text-3xl font-bold text-white">
+          {SITE.booking.heading}
+        </h2>
+        <p className="mb-12 text-slate-400">{SITE.booking.subtitle}</p>
+      </Reveal>
 
       <div className="glass-panel flex min-h-[600px] flex-col items-center justify-center overflow-hidden rounded-2xl border border-slate-700/50 p-4 md:p-8">
         <div className="w-full">

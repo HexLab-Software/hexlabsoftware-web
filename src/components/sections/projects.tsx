@@ -1,4 +1,5 @@
 import { Icon } from "@/components/icon";
+import { Reveal } from "@/components/reveal";
 import { PROJECTS, type Project } from "@/lib/projects";
 import { SITE } from "@/lib/site";
 
@@ -91,13 +92,13 @@ export function Projects() {
       className="border-y border-slate-700/50 bg-primary-container/30 py-24"
     >
       <div className="mx-auto max-w-7xl px-6">
-        <div className="mb-16 flex flex-col items-start justify-between gap-6 md:flex-row md:items-end">
+        <Reveal className="mb-16 flex flex-col items-start justify-between gap-6 md:flex-row md:items-end">
           <div>
             <h2 className="flex items-center gap-3 font-headline text-3xl font-bold text-white">
               <Icon name="code" className="text-on-primary-container" />
               {SITE.projects.heading}
             </h2>
-            <div className="mt-2 h-1 w-20 rounded-full bg-primary" />
+            <div className="accent-bar mt-2 h-1 w-20 rounded-full bg-primary" />
           </div>
           <a
             href={SITE.social.github}
@@ -107,12 +108,12 @@ export function Projects() {
           >
             {SITE.projects.cta} <Icon name="open_in_new" size={16} />
           </a>
-        </div>
-        <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
+        </Reveal>
+        <Reveal stagger className="grid grid-cols-1 gap-8 md:grid-cols-3">
           {top.map((project) => (
             <ProjectCard key={project.name} project={project} />
           ))}
-        </div>
+        </Reveal>
       </div>
     </section>
   );

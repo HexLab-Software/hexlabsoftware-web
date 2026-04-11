@@ -10,6 +10,7 @@ import {
 } from "react";
 import posthog from "posthog-js";
 import { Icon } from "@/components/icon";
+import { Reveal } from "@/components/reveal";
 import {
   validateContact,
   type ContactPayload,
@@ -96,16 +97,16 @@ export function Contact() {
 
   return (
     <section id="contact" className="mx-auto max-w-4xl px-6 py-24">
-      <div className="mb-12 text-center">
+      <Reveal className="mb-12 text-center">
         <h2 className="flex items-center justify-center gap-3 font-headline text-3xl font-bold text-white">
           <Icon name="mail" className="text-on-primary-container" />
           {SITE.contact.heading}
         </h2>
-        <div className="mx-auto mt-2 h-1 w-20 rounded-full bg-primary" />
+        <div className="accent-bar mx-auto mt-2 h-1 w-20 rounded-full bg-primary" />
         <p className="mt-4 text-slate-400">{SITE.contact.subtitle}</p>
-      </div>
+      </Reveal>
 
-      <div className="terminal-glow glass-panel w-full overflow-hidden rounded-xl border border-slate-700/50 bg-primary-container/60 p-8 shadow-2xl">
+      <Reveal className="terminal-glow glass-panel w-full overflow-hidden rounded-xl border border-slate-700/50 bg-primary-container/60 p-8 shadow-2xl">
         <form
           className="space-y-6"
           onSubmit={onSubmit}
@@ -225,7 +226,7 @@ export function Contact() {
             di Google.
           </p>
         )}
-      </div>
+      </Reveal>
     </section>
   );
 }

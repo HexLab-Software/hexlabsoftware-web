@@ -6,6 +6,7 @@ import { SITE } from "@/lib/site";
 
 export function Header() {
   const [open, setOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
     if (!open) return;
@@ -16,8 +17,19 @@ export function Header() {
     return () => window.removeEventListener("keydown", onKey);
   }, [open]);
 
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 12);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
   return (
-    <nav className="fixed top-0 z-50 w-full border-b border-slate-700/50 bg-primary-container shadow-lg shadow-black/20">
+    <nav
+      className={`nav-shell fixed top-0 z-50 w-full border-b border-slate-700/50 bg-primary-container ${
+        scrolled ? "is-scrolled" : ""
+      }`}
+    >
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-6 tracking-tight antialiased">
         <a
           href="#top"
@@ -32,7 +44,7 @@ export function Header() {
             <a
               key={item.href}
               href={item.href}
-              className="cursor-pointer font-medium text-slate-400 transition-colors duration-200 hover:text-slate-100 active:scale-95"
+              className="nav-link cursor-pointer font-medium text-slate-400 transition-colors duration-200 hover:text-slate-100 active:scale-95"
             >
               {item.label}
             </a>

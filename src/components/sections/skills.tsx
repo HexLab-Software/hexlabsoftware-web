@@ -1,4 +1,5 @@
 import { Icon } from "@/components/icon";
+import { Reveal } from "@/components/reveal";
 import { SKILLS, SKILLS_HEADING, type Skill, type SkillTone } from "@/lib/skills";
 
 const TONE_CLASSES: Record<
@@ -87,18 +88,18 @@ function SkillCard({ skill }: { skill: Skill }) {
 export function Skills() {
   return (
     <section id="stack" className="mx-auto max-w-7xl px-6 py-24">
-      <div className="mb-16">
+      <Reveal className="mb-16">
         <h2 className="flex items-center gap-3 font-headline text-3xl font-bold text-white">
           <Icon name="terminal" className="text-on-primary-container" />
           {SKILLS_HEADING}
         </h2>
-        <div className="mt-2 h-1 w-20 rounded-full bg-primary" />
-      </div>
-      <div className="grid grid-cols-1 gap-6 md:grid-cols-4">
+        <div className="accent-bar mt-2 h-1 w-20 rounded-full bg-primary" />
+      </Reveal>
+      <Reveal stagger className="grid grid-cols-1 gap-6 md:grid-cols-4">
         {SKILLS.map((skill) => (
           <SkillCard key={skill.title} skill={skill} />
         ))}
-      </div>
+      </Reveal>
     </section>
   );
 }
