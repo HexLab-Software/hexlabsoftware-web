@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { Icon } from "@/components/icon";
 import { Reveal } from "@/components/reveal";
 import { SKILLS, SKILLS_HEADING, type Skill, type SkillTone } from "@/lib/skills";
@@ -28,7 +29,7 @@ const TONE_CLASSES: Record<
   },
 };
 
-function SkillCard({ skill }: { skill: Skill }) {
+const SkillCard = memo(function SkillCard({ skill }: { skill: Skill }) {
   const tone = TONE_CLASSES[skill.tone];
   const titleClass =
     skill.size === "md"
@@ -83,7 +84,7 @@ function SkillCard({ skill }: { skill: Skill }) {
       {body}
     </div>
   );
-}
+});
 
 export function Skills() {
   return (

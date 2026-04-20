@@ -1,7 +1,10 @@
+import { memo } from "react";
 import { Icon } from "@/components/icon";
 import { Reveal } from "@/components/reveal";
 import { PROJECTS, type Project } from "@/lib/projects";
 import { SITE } from "@/lib/site";
+
+const TOP_PROJECTS = PROJECTS.slice(0, 3);
 
 const LANGUAGE_DOT: Record<string, string> = {
   Python: "bg-emerald-400",
@@ -18,7 +21,7 @@ const LANGUAGE_DOT: Record<string, string> = {
  * in prod — instead each project gets a reproducible gradient keyed on
  * `project.hue` plus its mono glyph floating at the centre.
  */
-function ProjectVisual({ project }: { project: Project }) {
+const ProjectVisual = memo(function ProjectVisual({ project }: { project: Project }) {
   const [h1, h2] = project.hue;
   return (
     <div
@@ -48,9 +51,9 @@ function ProjectVisual({ project }: { project: Project }) {
       </span>
     </div>
   );
-}
+});
 
-function ProjectCard({ project }: { project: Project }) {
+const ProjectCard = memo(function ProjectCard({ project }: { project: Project }) {
   const dotClass = LANGUAGE_DOT[project.language] ?? "bg-slate-400";
   return (
     <a
@@ -81,11 +84,10 @@ function ProjectCard({ project }: { project: Project }) {
       </div>
     </a>
   );
-}
+});
 
 export function Projects() {
-  // Stitch mockup shows 3 cards — keep the top three pinned repos.
-  const top = PROJECTS.slice(0, 3);
+  const top = TOP_PROJECTS;
   return (
     <section
       id="projects"
