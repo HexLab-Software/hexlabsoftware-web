@@ -1,12 +1,13 @@
 import { SITE } from "@/lib/site";
 
+const YEAR = new Date().getFullYear();
+
 export function Footer() {
-  const year = new Date().getFullYear();
   return (
     <footer className="w-full border-t border-slate-800 bg-primary-container">
       <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-4 px-12 py-8 text-sm tracking-wide text-slate-400 md:flex-row">
         <div>
-          © {year} {SITE.legalName} — {SITE.name}. P.IVA {SITE.vat}.
+          © {YEAR} {SITE.legalName} — {SITE.name}. P.IVA {SITE.vat}.
         </div>
         <div className="flex flex-wrap justify-center gap-6 md:gap-8">
           <a

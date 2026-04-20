@@ -1,11 +1,12 @@
 import { SITE } from "@/lib/site";
 
+const STACK_JSON = JSON.stringify(SITE.heroStack, null, 2);
+
 /**
  * Hero — faithful to the Stitch screen: centered headline with italic
  * secondary accent, subtitle, and a full-width terminal mockup below.
  */
 export function Hero() {
-  const stackJson = JSON.stringify(SITE.heroStack, null, 2);
   return (
     <section
       id="top"
@@ -59,7 +60,7 @@ export function Hero() {
               <span className="text-slate-100">cat stack.json</span>
             </div>
             <pre className="term-line term-line-4 mb-4 mt-1 whitespace-pre-wrap text-on-primary-container">
-              {stackJson}
+              {STACK_JSON}
             </pre>
 
             <div className="term-line term-line-5 flex flex-wrap gap-2">

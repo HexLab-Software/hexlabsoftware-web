@@ -15,27 +15,35 @@ import { SITE } from "@/lib/site";
  * We mirror the tokens declared in `globals.css` here; the two copies
  * must stay in sync.
  */
+
+const CAL_THEME = {
+  "cal-bg": "#1e2840",
+  "cal-bg-muted": "#0b1426",
+  "cal-bg-emphasis": "#1e2840",
+  "cal-brand": "#6d7793",
+  "cal-border": "#334155",
+  "cal-border-emphasis": "#858fac",
+  "cal-text": "#e2e8f0",
+  "cal-text-muted": "#94a3b8",
+  "cal-text-emphasis": "#ffffff",
+};
+
+const CAL_STYLE = { width: "100%", height: "100%", minHeight: 600, overflow: "scroll" } as const;
+const CAL_CONFIG = { layout: "month_view", theme: "dark" } as const;
+
 export function Booking() {
   useEffect(() => {
+    let mounted = true;
     (async () => {
       const cal = await getCalApi({ namespace: "hexlab-call" });
-      const theme = {
-        "cal-bg": "#1e2840",
-        "cal-bg-muted": "#0b1426",
-        "cal-bg-emphasis": "#1e2840",
-        "cal-brand": "#6d7793",
-        "cal-border": "#334155",
-        "cal-border-emphasis": "#858fac",
-        "cal-text": "#e2e8f0",
-        "cal-text-muted": "#94a3b8",
-        "cal-text-emphasis": "#ffffff",
-      };
+      if (!mounted) return;
       cal("ui", {
-        cssVarsPerTheme: { light: theme, dark: theme },
+        cssVarsPerTheme: { light: CAL_THEME, dark: CAL_THEME },
         hideEventTypeDetails: false,
         layout: "month_view",
       });
     })();
+    return () => { mounted = false; };
   }, []);
 
   return (
@@ -52,16 +60,8 @@ export function Booking() {
           <Cal
             namespace="hexlab-call"
             calLink={`${SITE.cal.username}/${SITE.cal.eventSlug}`}
-            style={{
-              width: "100%",
-              height: "100%",
-              minHeight: 600,
-              overflow: "scroll",
-            }}
-            config={{
-              layout: "month_view",
-              theme: "dark",
-            }}
+            style={CAL_STYLE}
+            config={CAL_CONFIG}
           />
         </div>
 

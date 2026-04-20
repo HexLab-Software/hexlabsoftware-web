@@ -3,7 +3,7 @@ import { Footer } from "@/components/footer";
 import { Hero } from "@/components/sections/hero";
 import { Skills } from "@/components/sections/skills";
 import { Projects } from "@/components/sections/projects";
-import { Booking } from "@/components/sections/booking";
+import { BookingLoader } from "@/components/booking-loader";
 import { Contact } from "@/components/sections/contact";
 
 export default function HomePage() {
@@ -14,7 +14,7 @@ export default function HomePage() {
         <Hero />
         <Skills />
         <Projects />
-        <Booking />
+        <BookingLoader />
         <Contact />
       </main>
       <Footer />
