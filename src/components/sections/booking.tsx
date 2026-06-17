@@ -47,7 +47,7 @@ export function Booking() {
   }, []);
 
   return (
-    <section id="booking" className="mx-auto max-w-4xl px-6 py-24 text-center">
+    <section className="mx-auto max-w-4xl px-6 py-24 text-center">
       <Reveal>
         <h2 className="mb-4 font-headline text-3xl font-bold text-white">
           {SITE.booking.heading}
