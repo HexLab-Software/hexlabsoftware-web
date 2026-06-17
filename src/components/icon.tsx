@@ -1,8 +1,28 @@
 /**
- * Thin wrapper around Google's Material Symbols Outlined font.
- * The icon name itself is rendered as text — the font ligatures turn it
- * into the corresponding glyph. We load the font in app/layout.tsx.
+ * Inline SVG icons (Material Symbols Outlined, 400 weight, 24dp grid).
+ *
+ * We ship the handful of glyphs we actually use as inline `<path>` data
+ * instead of pulling the whole Material Symbols web font: that font was a
+ * render-blocking third-party request downloading hundreds of glyphs to draw
+ * ~9 icons. The `viewBox` is the Material Symbols canvas (`0 -960 960 960`);
+ * colour comes from `currentColor`, size from the `size` prop.
+ *
+ * Adding an icon: grab the path from the matching Material Symbols Outlined
+ * SVG (weight 400) and add it under its symbol name here.
  */
+
+const ICON_PATHS: Record<string, string> = {
+  lock: "M220-80q-24.75 0-42.37-17.63Q160-115.25 160-140v-434q0-24.75 17.63-42.38Q195.25-634 220-634h70v-96q0-78.85 55.61-134.42Q401.21-920 480.11-920q78.89 0 134.39 55.58Q670-808.85 670-730v96h70q24.75 0 42.38 17.62Q800-598.75 800-574v434q0 24.75-17.62 42.37Q764.75-80 740-80H220Zm0-60h520v-434H220v434Zm314.5-162.03Q557-324.06 557-355q0-30-22.67-54.5t-54.5-24.5q-31.83 0-54.33 24.5t-22.5 55q0 30.5 22.67 52.5t54.5 22q31.83 0 54.33-22.03ZM350-634h260v-96q0-54.17-37.88-92.08-37.88-37.92-92-37.92T388-822.08q-38 37.91-38 92.08v96ZM220-140v-434 434Z",
+  open_in_new: "M180-120q-24 0-42-18t-18-42v-600q0-24 18-42t42-18h279v60H180v600h600v-279h60v279q0 24-18 42t-42 18H180Zm202-219-42-43 398-398H519v-60h321v321h-60v-218L382-339Z",
+  code: "M320-242 80-482l242-242 43 43-199 199 197 197-43 43Zm318 2-43-43 199-199-197-197 43-43 240 240-242 242Z",
+  terminal: "M140-160q-24 0-42-18t-18-42v-520q0-24 18-42t42-18h680q24 0 42 18t18 42v520q0 24-18 42t-42 18H140Zm0-60h680v-436H140v436Zm160-72-42-42 103-104-104-104 43-42 146 146-146 146Zm190 4v-60h220v60H490Z",
+  mail: "M140-160q-24 0-42-18t-18-42v-520q0-24 18-42t42-18h680q24 0 42 18t18 42v520q0 24-18 42t-42 18H140Zm340-302L140-685v465h680v-465L480-462Zm0-60 336-218H145l335 218ZM140-685v-55 520-465Z",
+  web: "M140-160q-24 0-42-18t-18-42v-520q0-24 18-42t42-18h680q24 0 42 18t18 42v520q0 24-18 42t-42 18H140Zm0-60h461v-163H140v163Zm521 0h159v-386H661v386ZM140-443h461v-163H140v163Z",
+  database: "M480-120q-151 0-255.5-46.5T120-280v-400q0-66 105.5-113T480-840q149 0 254.5 47T840-680v400q0 67-104.5 113.5T480-120Zm0-488q86 0 176.5-26.5T773-694q-27-32-117.5-59T480-780q-88 0-177 26t-117 60q28 35 116 60.5T480-608Zm-1 214q42 0 84-4.5t80.5-13.5q38.5-9 73.5-22t63-29v-155q-29 16-64 29t-74 22q-39 9-80 14t-83 5q-42 0-84-5t-80.5-14q-38.5-9-73-22T180-618v155q27 16 61 29t72.5 22q38.5 9 80.5 13.5t85 4.5Zm1 214q48 0 99-8.5t93.5-22.5q42.5-14 72-31t35.5-35v-125q-28 16-63 28.5T643.5-352q-38.5 9-80 13.5T479-334q-43 0-85-4.5T313.5-352q-38.5-9-72.5-21.5T180-402v126q5 17 34 34.5t72 31q43 13.5 94 22t100 8.5Z",
+  cloud: "M251-160q-88 0-149.5-61.5T40-371q0-78 50-137t127-71q20-97 94-158.5T482-799q112 0 189 81.5T748-522v24q72-2 122 46.5T920-329q0 69-50 119t-119 50H251Zm0-60h500q45 0 77-32t32-77q0-45-32-77t-77-32h-63v-84q0-91-61-154t-149-63q-88 0-149.5 63T267-522h-19q-62 0-105 43.5T100-371q0 63 44 107t107 44Zm229-260Z",
+  strategy: "M220-520 80-600v-160l140-80 140 80v160l-140 80Zm0-69 80-46v-90l-80-46-80 46v90l80 46Zm430 71v-70l150 88v280L560-80 320-220v-280l150-87v69l-90 53v211l180 104 180-104v-211l-90-53Zm-120 98v-460h351l-73 110 73 110H590v240h-60Zm30 86ZM220-680Z",
+};
+
 export function Icon({
   name,
   className = "",
@@ -12,14 +32,20 @@ export function Icon({
   className?: string;
   size?: number;
 }) {
+  const path = ICON_PATHS[name];
+  if (!path) return null;
+
   return (
-    <span
+    <svg
       aria-hidden="true"
       data-icon={name}
-      className={`material-symbols-outlined ${className}`}
-      style={{ fontSize: size }}
+      width={size}
+      height={size}
+      viewBox="0 -960 960 960"
+      fill="currentColor"
+      className={className}
     >
-      {name}
-    </span>
+      <path d={path} />
+    </svg>
   );
 }

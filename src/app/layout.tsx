@@ -92,23 +92,6 @@ export default function RootLayout({
       className={`dark ${inter.variable} ${firaCode.variable}`}
       suppressHydrationWarning
     >
-      <head>
-        {/* Material Symbols icon font — loaded directly because next/font does
-            not optimise icon fonts. We request only the subset we use. */}
-        <link
-          rel="preconnect"
-          href="https://fonts.googleapis.com"
-        />
-        <link
-          rel="preconnect"
-          href="https://fonts.gstatic.com"
-          crossOrigin=""
-        />
-        <link
-          rel="stylesheet"
-          href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&display=swap"
-        />
-      </head>
       <body className="min-h-screen bg-bg text-ink antialiased">
         <PostHogProvider>{children}</PostHogProvider>
         <JsonLd />
