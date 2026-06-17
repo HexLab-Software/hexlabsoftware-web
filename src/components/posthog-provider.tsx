@@ -32,16 +32,33 @@ function ensurePostHog(): boolean {
  * is captured: React runs child effects before parent effects, so gating the
  * capture on a parent-effect-driven flag would drop the initial load —
  * fatal on this one-page site where no further navigation fires the effect.
+ *
+ * Init + the first capture are deferred to requestIdleCallback so PostHog's
+ * bundle work stays out of the hydration/TBT window. The idle callback still
+ * fires on this static page, and the 2s timeout (plus the setTimeout
+ * fallback) guarantees the initial pageview is never silently dropped.
  */
 function PageviewTracker() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
   useEffect(() => {
-    if (!ensurePostHog() || !pathname) return;
-    const qs = searchParams?.toString();
-    const url = qs ? `${pathname}?${qs}` : pathname;
-    posthog.capture("$pageview", { $current_url: url });
+    if (!pathname) return;
+
+    const capture = () => {
+      if (!ensurePostHog()) return;
+      const qs = searchParams?.toString();
+      const url = qs ? `${pathname}?${qs}` : pathname;
+      posthog.capture("$pageview", { $current_url: url });
+    };
+
+    if (typeof window.requestIdleCallback === "function") {
+      const id = window.requestIdleCallback(capture, { timeout: 2000 });
+      return () => window.cancelIdleCallback?.(id);
+    }
+
+    const t = window.setTimeout(capture, 1);
+    return () => window.clearTimeout(t);
   }, [pathname, searchParams]);
 
   return null;
