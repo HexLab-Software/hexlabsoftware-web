@@ -38,8 +38,8 @@ export function BookingLoader() {
     if (!el) return;
 
     if (typeof IntersectionObserver === "undefined") {
-      setShow(true);
-      return;
+      const timeout = setTimeout(() => setShow(true), 0);
+      return () => clearTimeout(timeout);
     }
 
     const io = new IntersectionObserver(

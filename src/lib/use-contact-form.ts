@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState, useTransition, type FormEvent } from "react";
+import { useEffect, useRef, useState, useTransition, type FormEvent } from "react";
 import posthog from "posthog-js";
 import { validateContact, type ContactPayload } from "@/lib/contact-schema";
 import { executeRecaptcha, RECAPTCHA_ENABLED } from "@/lib/recaptcha-client";
@@ -12,10 +12,14 @@ export type ContactFieldErrors = Partial<
 >;
 
 export function useContactForm() {
-  const renderedAt = useRef(Date.now());
+  const renderedAt = useRef<number | null>(null);
   const [status, setStatus] = useState<ContactStatus>("idle");
   const [errors, setErrors] = useState<ContactFieldErrors>({});
   const [, startTransition] = useTransition();
+
+  useEffect(() => {
+    renderedAt.current = Date.now();
+  }, []);
 
   async function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -31,7 +35,7 @@ export function useContactForm() {
       subject: String(formData.get("subject") ?? ""),
       message: String(formData.get("message") ?? ""),
       company: String(formData.get("company") ?? ""),
-      renderedAt: renderedAt.current,
+      renderedAt: renderedAt.current ?? Date.now(),
     };
 
     const local = validateContact(payload);
