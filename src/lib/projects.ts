@@ -1,6 +1,5 @@
 /**
- * Pinned open source projects — ordered by importance as displayed on GitHub.
- * Source: `gh api graphql` pinnedItems for `Gybra` + `HexLab-Software`.
+ * Public projects ordered for the homepage; the first three are displayed.
  */
 
 export type Project = {
@@ -18,10 +17,22 @@ export type Project = {
 
 export const PROJECTS: readonly Project[] = [
   {
+    name: "pi-telegram-notifier",
+    tagline: "Tooling per coding agent",
+    description:
+      "Estensione per Pi che invia notifiche Telegram al termine di una sessione agentica, con attenzione a privacy, test e integrazione nel workflow.",
+    language: "TypeScript",
+    tags: ["Pi", "Coding agents", "Tooling"],
+    href: "https://github.com/Gybra/pi-telegram-notifier",
+    org: "Gybra",
+    glyph: "⌘",
+    hue: [190, 220],
+  },
+  {
     name: "telegram-excerpt-prd-bot",
     tagline: "LLM-powered PRD extractor",
     description:
-      "Estrae PRD strutturati dai messaggi dei clienti su Telegram e li consegna pronti da implementare al tuo coding assistant preferito.",
+      "Trasforma conversazioni Telegram in PRD strutturati, per chiarire i requisiti prima dello sviluppo.",
     language: "Python",
     tags: ["LLM", "Telegram", "Agents"],
     href: "https://github.com/Gybra/telegram-excerpt-prd-bot",
@@ -33,7 +44,7 @@ export const PROJECTS: readonly Project[] = [
     name: "Stock-Market-App",
     tagline: "Laravel portfolio tracker",
     description:
-      "Applicazione Laravel per tracciare un portfolio di asset finanziari, con bot Telegram, report giornalieri automatici e prezzi real-time via AlphaVantage.",
+      "Applicazione Laravel con API, bot Telegram, report automatici e test Pest per il monitoraggio di un portafoglio finanziario.",
     language: "PHP",
     tags: ["Laravel", "Fintech", "Telegram Bot"],
     href: "https://github.com/HexLab-Software/Stock-Market-App",
