@@ -167,14 +167,14 @@ export default async function Image() {
             style={{
               display: "flex",
               flexWrap: "wrap",
-              fontSize: 92,
+              fontSize: 76,
               fontWeight: 800,
               lineHeight: 0.95,
               letterSpacing: -3,
               color: INK,
             }}
           >
-            Ingegneria Full Stack&nbsp;
+            {SITE.heroHeadlineLead}&nbsp;
             <span
               style={{
                 display: "flex",
@@ -182,7 +182,7 @@ export default async function Image() {
                 color: ORANGE,
               }}
             >
-              ad Alta Precisione.
+              {SITE.heroHeadlineAccent}
             </span>
           </div>
 
@@ -196,8 +196,8 @@ export default async function Image() {
               lineHeight: 1.35,
             }}
           >
-            Progetto sistemi scalabili, infrastrutture resilienti e interfacce
-            utente intuitive — dal 2011.
+            Laravel, React e React Native. Coding agent con review, test e
+            verifica E2E.
           </div>
         </div>
 
@@ -227,7 +227,7 @@ export default async function Image() {
             }}
           >
             <span>{">"}_</span>
-            <span>Full Stack · Mobile · AI · Cloud</span>
+            <span>Software engineering · Coding agent · Review · Test</span>
           </div>
         </div>
       </div>

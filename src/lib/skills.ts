@@ -17,45 +17,45 @@ export type Skill = {
   orientation?: "vertical" | "horizontal";
 };
 
-export const SKILLS_HEADING = "Competenze Verticali";
+export const SKILLS_HEADING = "Cosa porto nel team";
 
 export const SKILLS: readonly Skill[] = [
   {
-    icon: "web",
-    title: "Frontend Engineering",
-    description:
-      "Sviluppo interfacce reattive e performanti con un focus ossessivo sull'esperienza utente e l'accessibilità.",
-    stack: ["React", "Next.js", "TypeScript", "Tailwind"],
-    tone: "sky",
-    span: "md:col-span-2",
-    size: "lg",
-  },
-  {
     icon: "database",
-    title: "Backend & Distributed Systems",
+    title: "Backend e system design",
     description:
-      "Architetture a microservizi scalabili, ottimizzazione di database e gestione di flussi dati ad alto volume.",
-    stack: ["Laravel", "Node.js", "PostgreSQL", "Redis"],
+      "Progetto API, modelli dati e sistemi manutenibili. Laravel/PHP è il mio stack principale.",
+    stack: ["Laravel", "PHP", "Python", "Database", "System design"],
     tone: "emerald",
     span: "md:col-span-2",
     size: "lg",
   },
   {
-    icon: "cloud",
-    title: "DevOps & Infrastructure",
+    icon: "web",
+    title: "Web e mobile",
     description:
-      "Automazione dei deployment e gestione cloud-native attraverso IaC.",
-    stack: ["AWS", "Docker"],
+      "Sviluppo interfacce e applicazioni con attenzione a comportamento, accessibilità e manutenzione.",
+    stack: ["React", "Next.js", "TypeScript", "React Native"],
+    tone: "sky",
+    span: "md:col-span-2",
+    size: "lg",
+  },
+  {
+    icon: "strategy",
+    title: "Qualità del software",
+    description:
+      "Definisco verifiche automatiche e controllo i flussi critici con test di integrazione ed E2E.",
+    stack: ["Testing", "Playwright", "Review"],
     tone: "amber",
     span: "md:col-span-2 lg:col-span-1",
     size: "md",
   },
   {
-    icon: "strategy",
-    title: "Mobile, AI & Tech Strategy",
+    icon: "terminal",
+    title: "Workflow per coding agent",
     description:
-      "App native iOS/Android, integrazione di modelli linguistici in prodotti reali, mentoring tecnico e traduzione di obiettivi di business in soluzioni robuste.",
-    stack: ["iOS", "Android", "LLM", "System Design", "Mentorship"],
+      "Progetto harness, skills e guardrail per integrare gli agenti nel processo del team, con responsabilità e verifiche esplicite.",
+    stack: ["Requisiti", "Multi-model", "Validazione"],
     tone: "purple",
     span: "md:col-span-2 lg:col-span-3",
     size: "lg",

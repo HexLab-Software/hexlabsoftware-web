@@ -19,6 +19,9 @@ export function Hero() {
 
       <div className="hero-stagger z-10 w-full max-w-4xl space-y-12">
         <div className="space-y-4 text-center">
+          <p className="font-mono text-sm text-on-primary-container">
+            {SITE.legalName} · {SITE.heroWhoamiRole}
+          </p>
           <h1 className="font-headline text-5xl font-extrabold tracking-tighter text-white md:text-7xl">
             {SITE.heroHeadlineLead}{" "}
             <span className="italic text-secondary-italic-bright">
@@ -28,6 +31,14 @@ export function Hero() {
           <p className="mx-auto max-w-2xl text-xl text-slate-400">
             {SITE.heroSubtitle}
           </p>
+          <div className="flex flex-wrap justify-center gap-4 pt-4">
+            <a href="#booking" className="rounded bg-primary px-6 py-3 font-medium text-white transition-colors hover:bg-on-primary-container hover:text-primary-container">
+              {SITE.heroPrimaryCta}
+            </a>
+            <a href="#workflow" className="rounded border border-slate-600 px-6 py-3 font-medium text-slate-200 transition-colors hover:border-on-primary-container hover:text-white">
+              {SITE.heroSecondaryCta}
+            </a>
+          </div>
         </div>
 
         {/* Terminal mockup */}
@@ -50,7 +61,7 @@ export function Hero() {
               <span className="text-slate-100">whoami</span>
             </div>
             <div className="term-line term-line-2 mb-4 mt-1 text-slate-400">
-              {SITE.legalName} — {SITE.heroWhoamiRole}.
+              {SITE.legalName} — {SITE.role}.
             </div>
 
             <div className="term-line term-line-3 flex flex-wrap gap-2">
